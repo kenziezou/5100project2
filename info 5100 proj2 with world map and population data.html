@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Info 5100 project 2</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="d3.slider.css" media="screen" />
+</head>
+<style>
+#graticule {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .5;
+    stroke-width: .5px;
+}
+
+#container {
+    margin: 10px 10%;
+    padding: 20px;
+    border: 2px solid #d0d0d0;
+    border-radius: 5px;
+    height: 100%;
+    clear: both;
+}
+
+.hidden {
+    display: none;
+}
+
+div.tooltip {
+    color: #222;
+    background: #fff;
+    padding: .5em;
+    text-shadow: #f5f5f5 0 1px 0;
+    border-radius: 2px;
+    box-shadow: 0px 0px 2px 0px #a6a6a6;
+    opacity: 0.9;
+    position: absolute;
+}
+</style>
+
+<body>
+    <div id="top">
+        <h1>World map of population</h1>
+    </div>
+    <div id="container"></div>
+    <div id="slider"></div>
+    <script>
+    var time = 1500;
+
+    var width = document.getElementById('container').offsetWidth - 60;
+    var height = width / 2;
+
+    var projection = d3.geo.robinson().translate([0, 0]).scale(width / 2 / Math.PI);
+
+    var graticule = d3.geo.graticule();
+
+    var path = d3.geo.path().projection(projection);
+
+    var svg = d3.select("#container").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    var outterg = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var g = outterg.append("g").attr("id", "innerg");
+
+    var tooltip = d3.select("#container").append("div").attr("class", "tooltip hidden");
+
+    //gradient color is not very beautiful for this map
+    var minColor = "#ffeda0";
+    var maxColor = "#fc4e2a";
+
+    var colorCompute = d3.interpolate(minColor, maxColor);
+
+	//threshold color scale
+	var arr = [];
+	for(var i = 0; i < 9; i++){
+		arr.push(i*0.08);
+	}
+	console.log(arr.length);
+	var colorThresholdScale = d3.scale.threshold()
+								.domain(arr)
+								.range(["#ffffcd","#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"]);
+
+    //dataset about population from wiki
+    var worldPopulation = [585, 660, 710, 978, 1650, 7052];
+    var asiaPopulation = [282, 350, 411, 635, 947, 4250];
+    var africaPopulation = [86, 114, 106, 107, 133, 1052];
+    var euroPopulation = [168, 170, 178, 203, 408, 740];
+    var northAmericaPopulation = [6, 3, 2, 7, 82, 351];
+    var southAmericaPopulation = [40, 20, 10, 24, 74, 603];
+    var oceaniaPopulation = [3, 3, 3, 2, 6, 38]
+    var continentPopulationNames = ["worldPopulation","asiaPopulation","africaPopulation","euroPopulation","northAmericaPopulation","southAmericaPopulation","oceaniaPopulation"];
+
+    var initialMapColor = [colorThresholdScale(asiaPopulation[0]/4000), colorThresholdScale(africaPopulation[0]/4000), colorThresholdScale(euroPopulation[0]/4000), colorThresholdScale(northAmericaPopulation[0]/4000), colorThresholdScale(southAmericaPopulation[0]/4000), colorThresholdScale(oceaniaPopulation[0]/4000)];
+
+    function drawMap() {
+        d3.json("continent-geogame-110m.json", function(error, world) {
+
+
+            var countries = topojson.feature(world, world.objects.countries);
+
+            //http://geojson.org/geojson-spec.html#introduction
+            var asia = {
+                type: "FeatureCollection",
+                name: "Asia",
+                color: initialMapColor[0],
+                id: 1,
+                features: countries.features.filter(function(d) {
+                    return d.properties.continent == "Asia";
+                })
+            };
+            var africa = {
+                type: "FeatureCollection",
+                name: "Africa",
+                color: initialMapColor[1],
+                id: 2,
+                features: countries.features.filter(function(d) {
+                    return d.properties.continent == "Africa";
+                })
+            };
+            var europe = {
+                type: "FeatureCollection",
+                name: "Europe",
+                color: initialMapColor[2],
+                id: 3,
+                features: countries.features.filter(function(d) {
+                    return d.properties.continent == "Europe";
+                })
+            };
+            var na = {
+                type: "FeatureCollection",
+                name: "North America",
+                color: initialMapColor[3],
+                id: 4,
+                features: countries.features.filter(function(d) {
+                    return d.properties.continent == "North America";
+                })
+            };
+            var sa = {
+                type: "FeatureCollection",
+                name: "South America",
+                color: initialMapColor[4],
+                id: 5,
+                features: countries.features.filter(function(d) {
+                    return d.properties.continent == "South America";
+                })
+            };
+            var antarctica = {
+                type: "FeatureCollection",
+                name: "Antarctica",
+                color: "#98df8a",
+                id: 6,
+                features: countries.features.filter(function(d) {
+                    return d.properties.continent == "Antarctica";
+                })
+            };
+            var oceania = {
+                type: "FeatureCollection",
+                name: "Oceania",
+                color: initialMapColor[5],
+                id: 7,
+                features: countries.features.filter(function(d) {
+                    return d.properties.continent == "Oceania";
+                })
+            };
+
+            var continents = [asia, africa, europe, na, sa, antarctica, oceania];
+
+
+            var continent = g.selectAll(".continent").data(continents);
+
+            continent.enter().insert("path")
+                .attr("class", "continent")
+                .attr("d", path)
+                .attr("id", function(d, i) {
+                    return d.id;
+                })
+                .attr("title", function(d, i) {
+                    return d.name;
+                })
+                .style("fill", function(d, i) {
+                    return d.color;
+                });
+
+
+            continent
+                .on("mousemove", function(d, i) {
+                    var mouse = d3.mouse(svg.node()).map(function(d) {
+                        return parseInt(d);
+                    });
+                    tooltip
+                        .classed("hidden", false)
+                        .attr("style", "left:" + (mouse[0] + 50) + "px;top:" + (mouse[1] + 50) + "px")
+                        .html(d.name)
+                })
+                .on("mouseout", function(d, i) {
+                    tooltip.classed("hidden", true)
+                });
+
+            g.append("path")
+                .datum(graticule)
+                .attr("id", "graticule")
+                .attr("d", path);
+
+
+        });
+    }
+    drawMap();
+
+    d3.slider = function module() {
+        "use strict";
+
+        var div, min = 0,
+            max = 100,
+            svg, svgGroup, value, classPrefix, axis,
+            height = 40,
+            rect,
+            rectHeight = 12,
+            tickSize = 6,
+            margin = {
+                top: 25,
+                right: 25,
+                bottom: 15,
+                left: 25
+            },
+            ticks = 0,
+            tickValues, scale, tickFormat, dragger, width,
+            range = false,
+            callbackFn, stepValues, focus;
+
+        function slider(selection) {
+            selection.each(function() {
+                div = d3.select(this).classed('d3slider', true);
+                width = parseInt(div.style("width"), 10) - (margin.left + margin.right);
+
+                value = value || min;
+                scale = d3.scale.linear().domain([min, max]).range([0, width])
+                    .clamp(true);
+
+                // SVG 
+                svg = div.append("svg")
+                    .attr("class", "d3slider-axis")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left +
+                        "," + margin.top + ")");
+
+                // Range rect
+                svg.append("rect")
+                    .attr("class", "d3slider-rect-range")
+                    .attr("width", width)
+                    .attr("height", rectHeight);
+
+                // Range rect 
+                if (range) {
+                    svg.append("rect")
+                        .attr("class", "d3slider-rect-value")
+                        .attr("width", scale(value))
+                        .attr("height", rectHeight);
+                }
+
+                // Axis      
+                var axis = d3.svg.axis()
+                    .scale(scale)
+                    .orient("bottom");
+
+                if (ticks != 0) {
+                    axis.ticks(ticks);
+                    axis.tickSize(tickSize);
+                } else if (tickValues) {
+                    axis.tickValues(tickValues);
+                    axis.tickSize(tickSize);
+                } else {
+                    axis.ticks(0);
+                    axis.tickSize(0);
+                }
+                if (tickFormat) {
+                    axis.tickFormat(tickFormat);
+                }
+
+                svg.append("g")
+                    .attr("transform", "translate(0," + rectHeight + ")")
+                    .call(axis)
+
+                var values = [value];
+                dragger = svg.selectAll(".dragger")
+                    .data(values)
+                    .enter()
+                    .append("g")
+                    .attr("class", "dragger")
+                    .attr("transform", function(d) {
+                        return "translate(" + scale(d) + ")";
+                    })
+
+                var displayValue = null;
+                if (tickFormat) {
+                    displayValue = tickFormat(value);
+                } else {
+                    displayValue = d3.format(",.0f")(value);
+                }
+
+                dragger.append("text")
+                    .attr("x", 0)
+                    .attr("y", -15)
+                    .attr("text-anchor", "middle")
+                    .attr("class", "draggertext")
+                    .text(displayValue+" year");
+                dragger.append("circle")
+                    .attr("class", "dragger-outer")
+                    .attr("r", 10)
+                    .attr("transform", function(d) {
+                        return "translate(0,6)";
+                    });
+
+                dragger.append("circle")
+                    .attr("class", "dragger-inner")
+                    .attr("r", 4)
+                    .attr("transform", function(d) {
+                        return "translate(0,6)";
+                    });
+
+
+                // Enable dragger drag 
+                var dragBehaviour = d3.behavior.drag();
+                dragBehaviour.on("drag", slider.drag);
+                dragger.call(dragBehaviour);
+
+                // Move dragger on click 
+                svg.on("click", slider.click);
+
+            });
+        }
+
+        slider.draggerTranslateFn = function() {
+            return function(d) {
+                return "translate(" + scale(d) + ")";
+            }
+        }
+
+        slider.click = function() {
+            var pos = d3.event.offsetX || d3.event.layerX;
+            slider.move(pos);
+        }
+
+        slider.drag = function() {
+            var pos = d3.event.x;
+            slider.move(pos + margin.left);
+        }
+
+        slider.move = function(pos) {
+            var l, u;
+            var newValue = scale.invert(pos - margin.left);
+            // find tick values that are closest to newValue
+            // lower bound
+            if (stepValues != undefined) {
+                l = stepValues.reduce(function(p, c, i, arr) {
+                    if (c < newValue) {
+                        return c;
+                    } else {
+                        return p;
+                    }
+                });
+
+                // upper bound
+                if (stepValues.indexOf(l) < stepValues.length - 1) {
+                    u = stepValues[stepValues.indexOf(l) + 1];
+                } else {
+                    u = l;
+                }
+                // set values
+                var oldValue = value;
+                value = ((newValue - l) <= (u - newValue)) ? l : u;
+            } else {
+                var oldValue = value;
+                value = newValue;
+            }
+            var values = [value];
+
+            // Move dragger
+            svg.selectAll(".dragger").data(values)
+                .attr("transform", function(d) {
+                    return "translate(" + scale(d) + ")";
+                });
+
+            var displayValue = null;
+            if (tickFormat) {
+                displayValue = tickFormat(value);
+            } else {
+                displayValue = d3.format(",.0f")(value);
+            }
+            svg.selectAll(".dragger").select("text")
+                .text(displayValue+" year");
+
+            if (displayValue == "1,500")
+                changeColor(0);
+            if (displayValue == "1,600")
+                changeColor(1);
+            if (displayValue == "1,700")
+                changeColor(2);
+            if (displayValue == "1,800")
+                changeColor(3);
+            if (displayValue == "1,900")
+                changeColor(4);
+            if (displayValue == "2,012")
+                changeColor(5);
+
+
+
+            if (range) {
+                svg.selectAll(".d3slider-rect-value")
+                    .attr("width", scale(value));
+            }
+
+            if (callbackFn) {
+                callbackFn(slider);
+            }
+
+        }
+
+        // Getter/setter functions
+        slider.min = function(_) {
+            if (!arguments.length) return min;
+            min = _;
+            return slider;
+        };
+
+        slider.max = function(_) {
+            if (!arguments.length) return max;
+            max = _;
+            return slider;
+        };
+
+        slider.classPrefix = function(_) {
+            if (!arguments.length) return classPrefix;
+            classPrefix = _;
+            return slider;
+        }
+
+        slider.tickValues = function(_) {
+            if (!arguments.length) return tickValues;
+            tickValues = _;
+            return slider;
+        }
+
+        slider.ticks = function(_) {
+            if (!arguments.length) return ticks;
+            ticks = _;
+            return slider;
+        }
+
+        slider.stepValues = function(_) {
+            if (!arguments.length) return stepValues;
+            stepValues = _;
+            return slider;
+        }
+
+        slider.tickFormat = function(_) {
+            if (!arguments.length) return tickFormat;
+            tickFormat = _;
+            return slider;
+        }
+
+        slider.value = function(_) {
+            if (!arguments.length) return value;
+            value = _;
+            return slider;
+        }
+
+        slider.showRange = function(_) {
+            if (!arguments.length) return range;
+            range = _;
+            return slider;
+        }
+
+        slider.callback = function(_) {
+            if (!arguments.length) return callbackFn;
+            callbackFn = _;
+            return slider;
+        }
+
+        slider.setValue = function(newValue) {
+            var pos = scale(newValue) + margin.left;
+            slider.move(pos);
+        }
+
+        slider.mousemove = function() {
+            var pos = d3.mouse(this)[0];
+            var val = slider.getNearest(scale.invert(pos), stepValues);
+            focus.attr("transform", "translate(" + scale(val) + ",0)");
+            focus.selectAll("text").text(val);
+        }
+
+        slider.getNearest = function(val, arr) {
+            var l = arr.reduce(function(p, c, i, a) {
+                if (c < val) {
+                    return c;
+                } else {
+                    return p;
+                }
+            });
+            var u = arr[arr.indexOf(l) + 1];
+            var nearest = ((value - l) <= (u - value)) ? l : u;
+            return nearest;
+        }
+
+        slider.destroy = function() {
+            div.selectAll('svg').remove();
+            return slider;
+        }
+
+        return slider;
+
+    };
+
+
+    function changeColor(timeSeries) {
+    	var percentage = [];
+
+		percentage.push(asiaPopulation[timeSeries]/4000);
+		percentage.push(africaPopulation[timeSeries]/4000);
+		percentage.push(euroPopulation[timeSeries]/4000);
+		percentage.push(northAmericaPopulation[timeSeries]/4000);
+		percentage.push(southAmericaPopulation[timeSeries]/4000);
+		percentage.push(oceaniaPopulation[timeSeries]/4000);
+
+    	console.log(percentage);
+        var id = [1, 2, 3, 4, 5, 7];
+        id.forEach(function(d,i) {
+            d3.select('[id="' + d + '"]').style("fill", colorThresholdScale(percentage[i]));
+        });
+    }
+
+    //Initialize slider
+    var slider = d3.slider().min(1500).max(2012).tickValues([1500, 1600, 1700, 1800, 1900, 2012]).stepValues([1500, 1600, 1700, 1800, 1900, 2012]);
+    // Render the slider in the div
+    d3.select('#slider').call(slider);
+    </script>
+</body>
+
+</html>
