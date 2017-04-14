@@ -1,0 +1,209 @@
+
+<!-- code from http://bl.ocks.org/KoGor/5994804 -->
+<html>
+<head>
+<title>INFO 3300 - Data-driven Web Applications</title>
+<link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+Sans" rel="stylesheet">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://d3js.org/topojson.v2.min.js"></script>
+
+<style type="text/css">
+
+.water {
+  fill: #607d8b;
+}
+
+.land {
+  fill: #d7ccc8;
+  stroke: #FFF;
+  stroke-width: 0.5px;
+}
+
+.land:hover {
+  fill:#ffe0b2;
+  stroke-width: 1px;
+}
+
+.focused {
+  fill: #ffc107;
+}
+
+select {
+  position: absolute;
+  top: 20px;
+  left: 650px;
+  border: solid #ccc 1px;
+  padding: 3px;
+  box-shadow: inset 1px 1px 2px #ddd8dc;
+}
+
+.countryTooltip {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  background: #fff;
+  padding: 5px;
+  text-align: left;
+  border: solid #ccc 1px;
+  color: #666;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+</style>
+</head>
+
+<body>
+<div id="globe"></div>
+
+<script type="text/javascript">
+
+var width = 900,
+    height = 600,
+    sens = 0.25,
+    focused;
+
+//Setting projection
+
+var projection = d3.geoOrthographic()
+                    .scale(300)
+                    .rotate([0,0])
+                    .translate([width / 2, height / 2])
+                    .clipAngle(90);
+
+var path = d3.geoPath().projection(projection);
+
+//SVG container
+var svg = d3.select("#globe").append("svg")
+.attr("width", width)
+.attr("height", height);
+
+//Adding water
+svg.append("path")
+.datum({type: "Sphere"})
+.attr("class", "water")
+.attr("d", path)
+//Drag event
+.call(d3.drag()
+  .subject(function() { var r = projection.rotate(); return {x: r[0] / sens, y: -r[1] / sens}; })
+  .on("drag", function() {
+    var rotate = projection.rotate();
+    projection.rotate([d3.event.x * sens, -d3.event.y * sens, rotate[2]]);
+    svg.selectAll("path.land").attr("d", path);
+    svg.selectAll("path.water");
+  }));
+
+var countryTooltip = d3.select("body").append("div").attr("class", "countryTooltip"),
+    countryList = d3.select("body").append("select").attr("name", "countries");
+
+d3.queue()
+.defer(d3.json, "world-110m.json")
+.defer(d3.tsv, "world-110m-country-names.tsv")
+.defer(d3.csv, "extinction-by-time.csv")
+.await(ready);
+
+//Main function
+
+function ready(error, world, countryData, extinctionData) {
+
+    //organize extinction data
+    console.log(extinctionData);
+    var extinction1500To1600 = [];
+
+    extinctionData.forEach(function(d) {
+        if ((d.Year >= 1500) && (d.Year <= 1600)) {
+            extinction1500To1600.push(d);
+        };
+    });
+    console.log(extinction1500To1600);
+
+    var countryById = {},
+    countries = topojson.feature(world, world.objects.countries).features;
+
+    //Adding countries to select
+    countryData.forEach(function(d) {
+      countryById[d.id] = d.name;
+      option = countryList.append("option");
+      option.text(d.name);
+      option.property("value", d.id);
+    });
+
+    //Drawing countries on the globe
+    var world = svg.selectAll("path.land")
+    .data(countries)
+    .enter().append("path")
+    .attr("class", "land")
+    .attr("d", path);
+
+
+    //draw points of interests   
+    var interestingPoints = [[35.8617, 104.1954],[104.07, 30.583]];
+    var circles = svg.selectAll ("circle").data(interestingPoints);
+    circles.enter().append("circle").attr("r", 5)
+    .merge(circles)
+    .attr("cx", function (d) {return projection(d)[0];})
+    .attr("cy", function (d) {return projection(d)[1];})
+    .style("fill", "red");
+
+   //Drag event
+    world.call(d3.drag()
+      .subject(function() { var r = projection.rotate(); return {x: r[0] / sens, y: -r[1] / sens}; })
+      .on("drag", function() {
+        var rotate = projection.rotate();
+        projection.rotate([d3.event.x * sens, -d3.event.y * sens, rotate[2]]);
+        svg.selectAll("path.land").attr("d", path);
+        svg.selectAll("path.water");
+        // svg.selectAll(".focused").classed("focused", focused = false);
+      }));
+    
+    //Mouse events
+    world.on("mouseover", function(d) {
+      countryTooltip.text(countryById[d.id])
+      .style("left", (d3.event.pageX + 7) + "px")
+      .style("top", (d3.event.pageY - 15) + "px")
+      .style("display", "block")
+      .style("opacity", 1);
+    })
+    .on("mouseout", function(d) {
+      countryTooltip.style("opacity", 0)
+      .style("display", "none");
+    })
+    .on("mousemove", function(d) {
+      countryTooltip.style("left", (d3.event.pageX + 7) + "px")
+      .style("top", (d3.event.pageY - 15) + "px");
+    });
+
+    
+    //Country focus on option select
+    d3.select("select").on("change", function() {
+      var rotate = projection.rotate(),
+      focusedCountry = country(countries, this),
+      p = d3.geoCentroid(focusedCountry);
+
+      svg.selectAll(".focused").classed("focused", focused = false);
+
+    //Globe rotating
+    (function transition() {
+      d3.transition()
+      .duration(2500)
+      .tween("rotate", function() {
+        var r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
+        return function(t) {
+          projection.rotate(r(t));
+          svg.selectAll("path").attr("d", path)
+          .classed("focused", function(d, i) { return d.id == focusedCountry.id ? focused = d : false; });
+        };
+      })
+      })();
+    });
+
+    function country(cnt, sel) { 
+      for(var i = 0, l = cnt.length; i < l; i++) {
+        if(cnt[i].id == sel.value) {return cnt[i];}
+      }
+    };
+  };
+</script>
+
+</body>
