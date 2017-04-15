@@ -118,6 +118,7 @@ function ready(error, world, countryData, extinctionData) {
     });
     console.log(extinction1500To1600);
 
+
     var countryById = {},
     countries = topojson.feature(world, world.objects.countries).features;
 
@@ -136,15 +137,6 @@ function ready(error, world, countryData, extinctionData) {
     .attr("class", "land")
     .attr("d", path);
 
-
-    //draw points of interests   
-    var interestingPoints = [[35.8617, 104.1954],[104.07, 30.583]];
-    var circles = svg.selectAll ("circle").data(interestingPoints);
-    circles.enter().append("circle").attr("r", 5)
-    .merge(circles)
-    .attr("cx", function (d) {return projection(d)[0];})
-    .attr("cy", function (d) {return projection(d)[1];})
-    .style("fill", "red");
 
    //Drag event
     world.call(d3.drag()
