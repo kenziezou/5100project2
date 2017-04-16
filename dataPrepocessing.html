@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Load csv fild</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+</body>
+<script>
+var timeSeries1 = [1961, 1970, 1980, 1990, 2000, 2010];
+var popuAfter1961 = [];
+var timeSeries2 = [1500, 1600, 1700, 1800, 1900, 1950];
+var popuBefore1961 = [];
+var idList = [4, 8, 12, 24, 10, 32, 51, 36, 40, 31, 44, 50, 112, 56, 84, 204, 64, 68, 70, 72, 76, 96, 100, 854, 108, 116, 120, 124, 140, 148, 152, 156, 170, 178, 180, 188, 384, 191, 192, 196, 203, 208, 262, 214, 218, 818, 222, 226, 232, 233, 231, 238, 242, 246, 250, 260, 266, 270, 268, 276, 288, 300, 304, 320, 324, 624, 328, 332, 340, 348, 352, 356, 360, 364, 368, 372, 376, 380, 388, 392, 400, 398, 404, 408, 410, 414, 417, 418, 428, 422, 426, 430, 434, 440, 442, 807, 450, 454, 458, 466, 478, 484, 498, 496, 499, 504, 508, 104, 516, 524, 528, 540, 554, 558, 562, 566, 578, 512, 586, 275, 591, 598, 600, 604, 608, 616, 620, 630, 634, 642, 643, 646, 682, 686, 688, 694, 703, 705, 90, 706, 710, 728, 724, 144, 729, 740, 748, 752, 756, 760, 158, 762, 834, 764, 626, 768, 780, 788, 792, 795, 800, 804, 784, 826, 840, 858, 860, 548, 862, 704, 732, 887, 894, 716]
+var countryList = ["Afghanistan", "Albania", "Algeria", "Angola", "Antarctica", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bangladesh", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Congo [DRC]", "Congo [Republic]", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands [Islas Malvinas]", "Fiji", "Finland", "France", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Greenland", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "South Korea", "North Korea", "Kuwait", "Kyrgyz Republic", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macedonia, [FYROM]", "Madagascar", "Malawi", "Malaysia", "Mali", "Mauritius", "Mexico", "Moldova", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar [Burma]", "Namibia", "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palestinian Territory", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Romania", "Russian", "Rwanda", "Saudi Arabia", "Senegal", "Serbia", "Sierra Leone", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Western Sahara", "Yemen", "Zambia", "Zimbabwe"]
+
+//create the population dataset from 1961 to now
+//remember to do everything like coloring inside d3.csv function because d3.csv never returns anything
+d3.csv("/data/worldPopulation.csv", function(data) {
+
+    timeSeries1.forEach(function(t) {
+        var value = new Object();
+        value.year = t;
+        value.populationTotal = [];
+        data.forEach(function(d) {
+            var temp = new Object();
+            var str = t + "";
+            temp.country = d['CountryName'];
+            // var id = 
+            temp.population = d[str];
+            if (typeof(d['CountryName']) == "undefined" || typeof(d[str]) == "undefined")
+                console.log("warning");
+            var index = countryList.indexOf(d['CountryName']);
+            if (index < 0) temp.id = -1;
+            else temp.id = index;
+            //index < 0 means we can not find the id for the country
+            value.populationTotal.push(temp);
+        });
+        popuAfter1961.push(value);
+    });
+
+});
+
+//create the population dataset from 1500 to 1960
+//population in millions
+//index sequence asia, africa, europe, northAmerica, southAmerica, oceania
+var worldPopulation = [585, 660, 710, 978, 1650, 2512];
+var asiaPopulation = [282, 350, 411, 635, 947, 1402];
+var africaPopulation = [86, 114, 106, 107, 133, 221];
+var euroPopulation = [168, 170, 178, 203, 408, 547];
+var northAmericaPopulation = [6, 3, 2, 7, 82, 172];
+var southAmericaPopulation = [40, 20, 10, 24, 74, 167];
+var oceaniaPopulation = [3, 3, 3, 2, 6, 13];
+var worldArea = [44, 30, 10, 24, 18, 9];
+var str = ["asiaDensity", "africaDensity", "euroDensity", "northAmericaDensity", "southAmericaDensity", "oceaniaDensity"];
+
+for (var i = 0; i < 6; i++) {
+    var asiaDensity = asiaPopulation[i] / worldArea[0];
+    var africaDensity = africaPopulation[i] / worldArea[1];
+    var euroDensity = euroPopulation[i] / worldArea[2];
+    var northAmericaDensity = northAmericaPopulation[i] / worldArea[3];
+    var southAmericaDensity = southAmericaPopulation[i] / worldArea[4];
+    var oceaniaDensity = oceaniaPopulation[i] / worldArea[5];
+    var value = new Object();
+    value.year = timeSeries2[i];
+    var temp = [];
+    temp.push(asiaDensity);
+    temp.push(africaDensity);
+    temp.push(euroDensity);
+    temp.push(northAmericaDensity);
+    temp.push(southAmericaDensity);
+    temp.push(oceaniaDensity);
+    value.populationTotal = (temp);
+    popuBefore1961.push(value);
+}
+
+//create the extinction speices dataset
+//remember to use the dataset inside the d3.csv function for data visualization
+d3.csv("/data/extinction-by-time.csv", function(data) {
+    var extinction = [];
+    var timeSeries = [1500, 1600, 1700, 1800, 1900, 1950, 1960, 1970, 1980, 1990, 2000, 2010];
+    console.log(timeSeries.length);
+    timeSeries.forEach(function(d, i) {
+        var value = new Object();
+        var temp = [];
+        if (i == 0) {
+            value.year = d;
+        } else {
+            var leftTime = timeSeries[i - 1];
+            var rightTime = timeSeries[i];
+            data.forEach(function(d) {
+                value.year = rightTime;
+                if (d.Year >= leftTime && d.Year < rightTime) {
+                    var tmp = new Object();
+                    tmp.animalClass = d['Animal Class'];
+                    var specieName = d['Species Name'];
+                    var commonName = d['Common Name'];
+                    if (typeof(commonName) == "undefined")
+                        tmp.name = specieName;
+                    else tmp.name = commonName;
+                    if (typeof(tmp.name) == "undefined")
+                        console.log("warning, undefined name");
+                    tmp.extinctionTime = d.Year;
+                    var country = d.Countries.split(",");
+                    tmp.country = country;
+                    temp.push(tmp);
+                }
+            });
+        }
+        value.extinction = temp;
+        extinction.push(value);
+    });
+    console.log(extinction);
+});
+</script>
+
+</html>
