@@ -99,7 +99,7 @@ div.tooltip {
     var initialMapColor = [colorThresholdScale(asiaPopulation[0]/4000), colorThresholdScale(africaPopulation[0]/4000), colorThresholdScale(euroPopulation[0]/4000), colorThresholdScale(northAmericaPopulation[0]/4000), colorThresholdScale(southAmericaPopulation[0]/4000), colorThresholdScale(oceaniaPopulation[0]/4000)];
 
     function drawMap() {
-        d3.json("continent-geogame-110m.json", function(error, world) {
+        d3.json("continent-110m.json", function(error, world) {
 
 
             var countries = topojson.feature(world, world.objects.countries);
@@ -171,7 +171,7 @@ div.tooltip {
 
             var continents = [asia, africa, europe, na, sa, antarctica, oceania];
 
-
+            console.log(continents);
             var continent = g.selectAll(".continent").data(continents);
 
             continent.enter().insert("path")

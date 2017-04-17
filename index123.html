@@ -1,0 +1,217 @@
+
+<html>
+<head>
+<title>INFO 3300 - Data-driven Web Applications</title>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://d3js.org/topojson.v2.min.js"></script>
+
+<style type="text/css">
+</style>
+
+</head>
+
+<body>
+<select id="year1">
+    <option value="1500" selected="selected">1500</option>
+    <option value="1600">1600</option>
+    <option value="1700">1700</option>
+    <option value="1800">1800</option>
+    <option value="1900">1900</option>
+</select>
+<select id="year2">
+    <option value="1600" selected="selected">1600</option>
+    <option value="1700">1700</option>
+    <option value="1800">1800</option>
+    <option value="1900">1900</option>
+    <option value="1950">1950</option>
+    <option value="2010">2010</option>
+</select>
+
+<div id="map"></div>
+
+<script type="text/javascript">
+
+var width = 800,
+    height = 400;
+
+//Setting projection
+var projection = d3.geoEquirectangular().scale(100).translate([width / 2 - 100, height / 2]);
+
+var path = d3.geoPath().projection(projection);
+
+//SVG container
+var svg = d3.select("#map").append("svg")
+.attr("width", width)
+.attr("height", height);
+
+
+d3.queue()
+.defer(d3.json, "continent-110m.json")
+.defer(d3.tsv, "world-110m-country-names.tsv")
+.defer(d3.csv, "worldPopulation.csv")
+.defer(d3.csv, "populationBefore1960.csv")
+.defer(d3.csv, "extinction-by-time.csv")
+.defer(d3.csv, "coordinates.csv")
+//Main function
+.await(function (error, world, countryNames, population, popuByContinent, extinctionData, coordinates) {
+
+  var countries = topojson.feature(world, world.objects.countries).features;
+
+  popuByContinent.forEach(function(d) {
+    for (var year = 1500; year <= 1900; year += 100) {
+      d[year] = Number(d[year]);
+    };
+    d[1950] = Number(d[1950]);
+  });
+
+  population.forEach(function(d) {
+    for (var year = 1960; year <= 2010; year += 10) {
+      d[year] = Number(d[year]);
+    }
+  });
+
+  //find maximum population density
+  var maxPopu = d3.max(population, function (d) {return d[2010];});
+
+  //extinction data by time
+  var year1 = d3.select("#year1").node().value;
+  var year2 = d3.select("#year2").node().value;
+
+  //Draw initial continents
+  drawContinent(world, popuByContinent, year2, maxPopu);
+
+  d3.select("#year2").on("change", function() {
+    var selection = d3.select("#year2").node().value;
+    if (selection < 1960) {
+      drawContinent(world, popuByContinent, selection, maxPopu);
+    }
+    else {
+      drawCountry(countries, population, selection);
+    }
+  });
+
+  extinctionByInterval = extinctionByInterval(extinctionData, year1, year2, coordinates);
+
+});
+
+
+function extinctionByInterval(data, time1, time2, coordinates) {
+  
+  var extinctionByInterval = [];
+  data.forEach(function(d) {
+    var value = new Object();
+    if (d.Year >= time1 && d.Year < time2) {
+      value.animalClass = d["Animal Class"];
+      value.name = d["Common Name"]; 
+      if (typeof(d["Common Name"]) == "undefined") {
+        value.name = d["Species Name"];
+      }
+      value.extinctionTime = d.Year;
+      value.country = d.Countries.split(",");
+      extinctionByInterval.push(value);
+    };
+  });
+
+  return extinctionByInterval; 
+}
+
+
+function drawContinent(data, popu, time, max) {
+  var countries = topojson.feature(data, data.objects.countries).features;
+  var colorScale = d3.scaleLinear().domain([0, Math.log(max)]).range(['#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525','#000000']);
+
+  //creating data to draw continents
+  //code simplified from http://geojson.org/geojson-spec.html#introduction
+  var continentNames = ["Asia", "Africa", "Europe", "North America", "South America", "Oceania"];
+
+  var continents = [];
+  console.log(popu);
+
+  continentNames.forEach(function(d, i) {
+    var continentName = d;
+    var value = {type: "FeatureCollection", name: d, id: i + 1, 
+                color: colorScale(popu[i][time]),
+                features: countries.filter(function(d) { return d.properties.continent == continentName; })
+  };
+    continents.push(value);
+  });
+
+  console.log(continents);
+  var map = svg.selectAll("path.continent").data(continents);
+
+  map.enter().append("path")
+      .merge(map)
+      .attr("class", "continent")
+      .attr("d", path)
+      .attr("id", function(d, i) {
+          return d.id;
+      })
+      .attr("title", function(d, i) {
+          return d.name;
+      })
+      .style("fill", function(d, i) {
+          return d.color;
+      });
+}
+
+
+function drawCountry(data, popu, time) {
+
+    console.log(popu);
+    console.log(time);
+
+    data.forEach(function (d) {
+      var name = d.properties.name;
+      d.population = popu.filter(function (d) {  });
+    });
+    console.log(data);
+
+    var map = svg.selectAll("path.land").data(data)
+    .enter().append("path")
+    .attr("class", "land")
+    .attr("d", path)
+    .style("stroke", "white");
+}
+
+
+
+
+// function extinctionByTime(data) {
+//   var extinctionByTime = [];
+//   var timeSeries = [1500, 1600, 1700, 1800, 1900, 1950, 1960, 1970, 1980, 1990, 2000, 2010];
+//   timeSeries.forEach(function(d, i) {
+      
+//       var value = new Object();
+//       var temp = [];
+//       if (i == 0) {
+//           value.year = d;
+//       } else {
+//           var leftTime = timeSeries[i - 1];
+//           var rightTime = timeSeries[i];
+//           data.forEach(function(d) {
+//               value.year = rightTime;
+//               if (d.Year >= leftTime && d.Year < rightTime) {
+//                   var tmp = new Object();
+//                   tmp.animalClass = d["Animal Class"];
+//                   var specieName = d["Species Name"];
+//                   var commonName = d["Common Name"];
+//                   if (typeof(commonName) == "undefined")
+//                       tmp.name = specieName;
+//                   else tmp.name = commonName;
+//                   if (typeof(tmp.name) == "undefined")
+//                       console.log("warning, undefined name");
+//                   tmp.extinctionTime = d.Year;
+//                   var country = d.Countries.split(",");
+//                   tmp.country = country;
+//                   temp.push(tmp);
+//               }
+//           });
+//       }
+//       value.extinction = temp;
+//       extinctionByTime.push(value);
+//   });
+//   return extinctionByTime;
+// }
+</script>
+
+</body>
