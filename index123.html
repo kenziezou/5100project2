@@ -36,11 +36,11 @@
 
 <script type="text/javascript">
 
-var width = 800,
-    height = 400;
+var width = 900,
+    height = 600;
 
 //Setting projection
-var projection = d3.geoEquirectangular().scale(100).translate([width / 2 - 100, height / 2]);
+var projection = d3.geoEquirectangular().scale(130).translate([width / 2 - 100, height / 2]);
 
 var path = d3.geoPath().projection(projection);
 
@@ -134,7 +134,7 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         continentNames.forEach(function(d, i) {
         var continentName = d;
         var value = {type: "FeatureCollection", name: d, id: i + 1, 
-                    color: colorScale(Math.log(popuContinent[i][time])),
+                    color: colorScale(popuContinent[i][time]),
                     features: countries.filter(function(d) { return d.properties.continent == continentName; })
         };
         continents.push(value);
@@ -159,20 +159,16 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         countries.forEach(function(d) {
             popuIdAndTime.forEach(function(e) {
                 if (e.id == d.id) {
-                    d.population = e.population;
+                    d.color = colorScale(e.population);
                 }
             })
         });
-
-        console.log(popuIdAndTime);
-        console.log(countries);
 
         var map = svg.selectAll("path").data(countries);
         map.enter().append("path")
             .merge(map)
             .attr("d", path)
-            .style("fill", colorScale(function(d) { 
-                return Math.log(d.population); }));      
+            .style("fill", function(d) { return d.color; });      
 
     }
 }
