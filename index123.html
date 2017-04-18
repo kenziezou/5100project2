@@ -89,11 +89,11 @@ d3.queue()
     mapExtinction(extinctionByInterval, coordinates);
 
     console.log(extinctionByInterval);
-    console.log(coordinates);
+
 });
 
 
-function extinctionByInterval(data, time1, time2) {
+function extinctionByInterval(data, time1, time2, coordinates) {
 
     var extinctionByInterval = [];
     data.forEach(function(d) {
@@ -104,8 +104,8 @@ function extinctionByInterval(data, time1, time2) {
             if (typeof(d["Common Name"]) == "undefined") {
                 value.name = d["Species Name"];
                 }
-            value.extinctionTime = d.Year;
-            value.country = d.Countries.split(",");
+            value.extinctionTime = Number(d.Year);
+            value.country = d.Countries;
             extinctionByInterval.push(value);
         };
     });
@@ -118,9 +118,19 @@ function mapExtinction(data, coordinates) {
 
     data.forEach(function(d) {
         coordinates.forEach(function(e) {
-            for (i=0; i<5; i++) {}
-        })
-    })
+            if (e.name == d.country) {
+                d.coordinates = [Number(e.longitude), Number(e.latitude)];    
+            };
+        });
+    });
+
+    circles = svg.selectAll("circles").data(data);
+
+    circles.enter().append("circle")
+    .attr("r", 5)
+    .attr("cx", function(d) { return projection(d.coordinates)[0]; })
+    .attr("cy", function(d) { return projection(d.coordinates)[1]; })
+    .style("fill", "red");
 
 }
 
@@ -135,7 +145,6 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     var color = ['#f7fbff','#deebf7','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c'];
 
     var colorScale = d3.scaleLinear().domain([0, Math.log(maxPopu)]).range(color);
-
 
     if (time < 1960) {
         //creating data to draw continents
