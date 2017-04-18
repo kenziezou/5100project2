@@ -73,8 +73,6 @@ d3.queue()
         d.id = Number(d.id);
     });
 
-    console.log(population);
-
     //extinction data by time
     var year1 = d3.select("#year1").node().value;
     var year2 = d3.select("#year2").node().value;
@@ -87,11 +85,15 @@ d3.queue()
         drawContinent(world, popuByContinent, population, selection);
     });
 
-    extinctionByInterval = extinctionByInterval(extinctionData, year1, year2, coordinates);
+    extinctionByInterval = extinctionByInterval(extinctionData, year1, year2);
+    mapExtinction(extinctionByInterval, coordinates);
+
+    console.log(extinctionByInterval);
+    console.log(coordinates);
 });
 
 
-function extinctionByInterval(data, time1, time2, coordinates) {
+function extinctionByInterval(data, time1, time2) {
 
     var extinctionByInterval = [];
     data.forEach(function(d) {
@@ -112,6 +114,17 @@ function extinctionByInterval(data, time1, time2, coordinates) {
 }
 
 
+function mapExtinction(data, coordinates) {
+
+    data.forEach(function(d) {
+        coordinates.forEach(function(e) {
+            for (i=0; i<5; i++) {}
+        })
+    })
+
+}
+
+
 function drawContinent(data, popuContinent, popuCountry, time) {
 
     var countries = topojson.feature(data, data.objects.countries).features;
@@ -119,18 +132,16 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     //find maximum population density
     var maxPopu = d3.max(popuCountry, function (d) {return d[2010];});
 
-    var color = ['#f7fbff','#deebf7','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c','#08306b'];
+    var color = ['#f7fbff','#deebf7','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c'];
 
     var colorScale = d3.scaleLinear().domain([0, Math.log(maxPopu)]).range(color);
 
-    //creating data to draw continents
-    //code simplified from http://geojson.org/geojson-spec.html#introduction
-    var continentNames = ["Asia", "Africa", "Europe", "North America", "South America", "Oceania"];
-    var continents = [];
-
-
 
     if (time < 1960) {
+        //creating data to draw continents
+        //code simplified from http://geojson.org/geojson-spec.html#introduction
+        var continentNames = ["Asia", "Africa", "Europe", "North America", "South America", "Oceania"];
+        var continents = [];
         continentNames.forEach(function(d, i) {
         var continentName = d;
         var value = {type: "FeatureCollection", name: d, id: i + 1, 
@@ -143,6 +154,7 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         var map = svg.selectAll("path").data(continents);
         map.enter().append("path")
             .merge(map)
+            .transition(1000)
             .attr("d", path)
             .style("fill", function(d) { return d.color; })
     } 
@@ -167,10 +179,13 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         var map = svg.selectAll("path").data(countries);
         map.enter().append("path")
             .merge(map)
+            .transition(1000)
             .attr("d", path)
             .style("fill", function(d) { return d.color; });      
 
     }
+
+
 }
 
 // function drawCountry(data, popu, time) {
