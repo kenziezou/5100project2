@@ -14,31 +14,43 @@ body {
     font-family: "Roboto", sans-serif;
     margin: 50px;
 }
+
+.overlay {
+    height: 0;
+    width: 0;
+    left: 0;
+    top: 0;
+    position: absolute;
+    z-index: 1;
+    background-color: rgb(80,0,0);
+}
+
+.graphic {
+    z-index:0;
+}
+
+.information {
+    z-index:2;
+}
+
 #slider {
     margin-bottom: 20px;
 }
 
-/*.overlay {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: rgba(80,0,0, 0.9);
-    overflow-x: hidden;
-    transition: 0.5s;
-}*/
+#tooltip {
+    font-size:80%;
+    color: rgb(80,0,0);
+}
 
 </style>
 
 </head>
 
 <body>
-<div id="myNav" class="overlay">
-<div id="map"></div>
-<div id="slider"></div>
-</div>
+<div id="myNav" class="overlay"></div>
+<div id="map" class="graphic"></div>
+<div id="slider" class="graphic"></div>
+
 <script type="text/javascript">
 
 var width = 1200,
@@ -59,7 +71,6 @@ var svg = d3.select("#map").append("svg")
 
 var layer1 = svg.append("g");
 var layer2 = svg.append("g");
-
 
 d3.queue()
 .defer(d3.json, "continent-110m.json")
@@ -100,7 +111,7 @@ d3.queue()
         connect: true,
         behaviour: "tap",
         range: range_all_sliders,
-        start: [ 1500, 1600 ],
+        start: [ 1900, 2010 ],
         pips: {
             mode: 'values',
             values: [1500, 1600, 1700, 1800, 1900, 1950, 1960,
@@ -110,13 +121,6 @@ d3.queue()
         }
     });
 
-
-    // d3.select("#year2").on("click", function() {
-
-    // var selection = d3.select("#year2").node().value;
-    //     drawContinent(world, popuByContinent, population, selection);
-    // });
-
     slider.noUiSlider.on("update", function (values) {
         var from = Number(values[0]);
         var to = Number(values[1]);
@@ -125,9 +129,121 @@ d3.queue()
         mapExtinction(extinctionData, from, to, coordinates);
 
     });
-
-
 });
+
+
+function mapExtinction(data, from, to, coordinates) {
+
+    var data = extinctionByInterval(data, from, to);
+    var occurrence = countOccurrence(data);
+
+    //nesting data by country 
+    //add coordinates and occurrence
+    nestedData = d3.nest().key(function(d) { return d.country; })
+        .entries(data);
+
+    nestedData.forEach(function(d) {
+        coordinates.forEach(function(e) {
+            if (e.name == d.key) {
+                d.coordinates = [Number(e.longitude), Number(e.latitude)];    
+            }
+        });
+        var country = d.key
+        d.count = occurrence[country];
+    })
+
+    console.log(nestedData);
+
+    var circles = layer2.selectAll("circle").data(nestedData);
+
+
+    circles.exit().remove();
+
+    circles.enter().append("circle")
+    .merge(circles)
+    .attr("cx", function(d) { return projection(d.coordinates)[0]; })
+    .attr("cy", function(d) { return projection(d.coordinates)[1]; })
+    .transition(2000)
+    .attr("r", function(d) { return circleScale(d.count); })
+    .style("fill", "#cc0000")
+    .style("opacity", 0.8);
+
+    var tooltip = d3.select("body")
+        .attr("id", "tooltip")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden");
+
+    circles
+    .on("mouseover", function(d) { 
+        d3.select(this).style("cursor", "pointer");
+        return tooltip.style("visibility", "visible").text(d.key); })
+
+    .on("mousemove", function() { 
+        return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px"); })
+
+    .on("mouseout", function() { 
+        d3.select(this).style("cursor", "default");
+        return tooltip.style("visibility", "hidden") })
+
+    circles.on("click", function() {
+        d3.select(".overlay").style("width", "100%").style("height", "100%");
+        // showExtinction(nestedData);
+    });
+
+    var screen = d3.select("#myNav");
+
+    screen.on("click", function(d) {
+        screen.style("width", "0%");
+    });
+}
+
+
+function showExtinction(data) {
+    var texts = d3.select("#myNav").append("svg").attr("width", width).attr("height", height)
+
+    texts.selectAll("text").data(data).enter()
+    .attr("class", "information")
+    .append("text", "abc");
+}
+
+//helper to count occurrence of extinction in each country
+function countOccurrence(array) {
+    var countryList = [];
+
+    array.forEach(function(d) {
+        countryList.push(d.country);
+    });
+    countryList.sort();
+
+    var occurrence = {};
+
+    for (var i = 0, j = countryList.length; i < j; i ++) {
+        occurrence[countryList[i]] = (occurrence[countryList[i]] || 0) + 1;
+    }    
+    return occurrence;
+}
+
+
+//helper to create extinction dataset within the input time frame
+function extinctionByInterval(data, time1, time2) {
+    var extinctionByInterval = [];
+    data.forEach(function(d) {
+        var value = new Object();
+        if (d.Year >= time1 && d.Year < time2) {
+            value.animalClass = d["Animal Class"];
+            value.name = d["Common Name"]; 
+            if (typeof(d["Common Name"]) == "undefined") {
+                value.name = d["Species Name"];
+                }
+            value.extinctionTime = Number(d.Year);
+            value.country = d.Countries.trim();
+            extinctionByInterval.push(value);
+        };
+    });
+    return extinctionByInterval; 
+}
 
 
 function drawContinent(data, popuContinent, popuCountry, time) {
@@ -193,84 +309,6 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         map.exit().remove();      
     }
 }
-
-
-function mapExtinction(data, from, to, coordinates) {
-
-    var data = extinctionByInterval(data, from, to);
-    var occurrence = countOccurrence(data);
-
-    //nesting data by country 
-    //add coordinates and occurrence
-    nestedData = d3.nest().key(function(d) { return d.country; })
-        .entries(data);
-
-    nestedData.forEach(function(d) {
-        coordinates.forEach(function(e) {
-            if (e.name == d.key) {
-                d.coordinates = [Number(e.longitude), Number(e.latitude)];    
-            }
-        });
-        var country = d.key
-        d.count = occurrence[country];
-    })
-
-    var circles = layer2.selectAll("circle").data(nestedData);
-
-    circles.enter().append("circle")
-    .merge(circles)
-    .attr("cx", function(d) { return projection(d.coordinates)[0]; })
-    .attr("cy", function(d) { return projection(d.coordinates)[1]; })
-    .transition(2500)
-    .attr("r", function(d) { return circleScale(d.count); })
-    .style("fill", "#cc0000")
-    .style("opacity", 0.8);
-
-    circles.exit().remove();
-
-    circles.on("click", function(d) {
-    });
-
-
-    //helper to count occurrence of extinction in each country
-    function countOccurrence(array) {
-        var countryList = [];
-
-        array.forEach(function(d) {
-            countryList.push(d.country);
-        });
-        countryList.sort();
-
-        var occurrence = {};
-
-        for (var i = 0, j = countryList.length; i < j; i ++) {
-            occurrence[countryList[i]] = (occurrence[countryList[i]] || 0) + 1;
-        }    
-        return occurrence;
-    }
-}
-
-
-//helper to create extinction dataset within the input time frame
-function extinctionByInterval(data, time1, time2) {
-    var extinctionByInterval = [];
-    data.forEach(function(d) {
-        var value = new Object();
-        if (d.Year >= time1 && d.Year < time2) {
-            value.animalClass = d["Animal Class"];
-            value.name = d["Common Name"]; 
-            if (typeof(d["Common Name"]) == "undefined") {
-                value.name = d["Species Name"];
-                }
-            value.extinctionTime = Number(d.Year);
-            value.country = d.Countries.trim();
-            extinctionByInterval.push(value);
-        };
-    });
-    return extinctionByInterval; 
-}
-
-
 // function createSlider() {
 //     var svg = d3.select("#slider"),
 //     margin = {right: 50, left: 50},

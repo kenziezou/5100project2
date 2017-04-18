@@ -18,8 +18,8 @@
 }
 .noUi-target {
   position: relative;
-  width:75%;
-  margin-right: 10%;
+  margin-left:20px;
+  width:90%;
   direction: ltr;
 }
 .noUi-base {
