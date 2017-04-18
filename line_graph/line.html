@@ -27,6 +27,11 @@ body {
   pointer-events: all;
 }
 
+.focus1 circle {
+  fill: #F1F3F3;
+  stroke: #FF6100;
+  stroke-width: 3px;
+}
 .focus circle {
   fill: #F1F3F3;
   stroke: #FF6100;
@@ -38,11 +43,14 @@ body {
   stroke-width: 2px;
   stroke-dasharray: 3,3;
 }
-
 </style>
+
 <body>
+<h1>World population history</h1>
+<p>The total number of world population from year 1500 to 2000.</p>
+
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script>
+<script id = "population">
 //Draw interactive line graph for world population history
 //consulted with the following reference: https://bl.ocks.org/alandunning/cfb7dcd7951826b9eacd54f0647f48d3
 //Data sets reference: http://worldpopulationhistory.org
@@ -66,7 +74,7 @@ var line = d3.line()
     .x(function(d) { return x(d.year); })
     .y(function(d) { return y(d.value); });
 
-var g = svg1.append("g")
+var g1 = svg1.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 d3.json("population.json", function(error, data) {
@@ -80,19 +88,19 @@ d3.json("population.json", function(error, data) {
     x.domain(d3.extent(data, function(d) { return d.year; }));
     y.domain([d3.min(data, function(d) { return d.value; }) / 1.005, d3.max(data, function(d) { return d.value; }) * 1.005]);
 
-    g.append("g")
+    g1.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x))
         .append("text")
           .attr("class", "axis-title")
           .attr("y", -15)
-          .attr("x", 480)
+          .attr("x", 780)
           .attr("dy", ".71em")
           .attr("fill", "#5D6971")
           .text("Year");
 
-    g.append("g")
+    g1.append("g")
         .attr("class", "axis axis--y")
         .call(d3.axisLeft(y).ticks(6).tickFormat(function(d) { return parseInt(d / 1000) + "k"; }))
       .append("text")
@@ -104,29 +112,29 @@ d3.json("population.json", function(error, data) {
         .attr("fill", "#5D6971")
         .text("World Population (millions)");
 
-    g.append("path")
+    g1.append("path")
         .datum(data)
         .attr("class", "line")
         .attr("d", line);
 
-    var focus = g.append("g")
+    var focus1 = g1.append("g")
         .attr("class", "focus")
         .style("display", "none");
 
-    focus.append("line")
+    focus1.append("line")
         .attr("class", "x-hover-line hover-line")
         .attr("y1", 0)
         .attr("y2", height);
 
-    focus.append("line")
+    focus1.append("line")
         .attr("class", "y-hover-line hover-line")
         .attr("x1", width)
         .attr("x2", width);
 
-    focus.append("circle")
+    focus1.append("circle")
         .attr("r", 7.5);
 
-    focus.append("text")
+    focus1.append("text")
         .attr("x", 15)
         .attr("dy", ".31em");
 
@@ -135,27 +143,29 @@ d3.json("population.json", function(error, data) {
         .attr("class", "overlay")
         .attr("width", width)
         .attr("height", height)
-        .on("mouseover", function() { focus.style("display", null); })
-        .on("mouseout", function() { focus.style("display", "none"); })
-        .on("mousemove", mousemove);
+        .on("mouseover", function() { focus1.style("display", null); })
+        .on("mouseout", function() { focus1.style("display", "none"); })
+        .on("mousemove", mousemove1);
 
-    function mousemove() {
-      var x0 = x.invert(d3.mouse(this)[0]),
-          i = bisectDate(data, x0, 1),
-          d0 = data[i - 1],
-          d1 = data[i],
-          d = x0 - d0.year > d1.year - x0 ? d1 : d0;
-      focus.attr("transform", "translate(" + x(d.year) + "," + y(d.value) + ")");
-      focus.select("text").text(function() { return d.value; });
-      focus.select(".x-hover-line").attr("y2", height - y(d.value));
-      focus.select(".y-hover-line").attr("x2", width + width);
+    function mousemove1() {
+      var x01 = x.invert(d3.mouse(this)[0]),
+          i1 = bisectDate(data, x01, 1),
+          d01 = data[i1 - 1],
+          d11 = data[i1],
+          d1 = x01 - d01.year > d11.year - x01 ? d11 : d01;
+      focus1.attr("transform", "translate(" + x(d1.year) + "," + y(d1.value) + ")");
+      focus1.select("text").text(function() { return d1.value; });
+      focus1.select(".x-hover-line").attr("y2", height - y(d1.value));
+      focus1.select(".y-hover-line").attr("x2", width + width);
     }
 });
 
 </script>
+
+<h1>Animal extinction history</h1>
 <p>The total number of extinct animals from year 1500 to 2000.</p>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script>
+<script id = "animal">
 //consulted with the following reference: https://bl.ocks.org/alandunning/cfb7dcd7951826b9eacd54f0647f48d3
 //Data sets reference: http://worldpopulationhistory.org
 var svg2 = d3.select("body")
@@ -198,14 +208,14 @@ d3.json("animals.json", function(error, data) {
         .append("text")
           .attr("class", "axis-title")
           .attr("y", -15)
-          .attr("x", 480)
+          .attr("x", 780)
           .attr("dy", ".71em")
           .attr("fill", "#5D6971")
           .text("Year");
 
     g.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(6).tickFormat(function(d) { return parseInt(d / 1000) + "k"; }))
+        .call(d3.axisLeft(y).ticks(6).tickFormat(function(d) { return parseInt(d); }))
       .append("text")
         .attr("class", "axis-title")
         .attr("transform", "rotate(-90)")
