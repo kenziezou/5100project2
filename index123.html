@@ -17,16 +17,28 @@ body {
 #slider {
     margin-bottom: 20px;
 }
+
+/*.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgba(80,0,0, 0.9);
+    overflow-x: hidden;
+    transition: 0.5s;
+}*/
+
 </style>
 
 </head>
 
 <body>
-
+<div id="myNav" class="overlay">
 <div id="map"></div>
-
 <div id="slider"></div>
-
+</div>
 <script type="text/javascript">
 
 var width = 1200,
@@ -40,9 +52,13 @@ var path = d3.geoPath().projection(projection);
 
 var circleScale = d3.scaleLinear().domain([1,52]).range([5,50]);
 //SVG container
+
 var svg = d3.select("#map").append("svg")
 .attr("width", width)
 .attr("height", height);
+
+var layer1 = svg.append("g");
+var layer2 = svg.append("g");
 
 
 d3.queue()
@@ -84,7 +100,7 @@ d3.queue()
         connect: true,
         behaviour: "tap",
         range: range_all_sliders,
-        start: [ 1500, 2010 ],
+        start: [ 1500, 1600 ],
         pips: {
             mode: 'values',
             values: [1500, 1600, 1700, 1800, 1900, 1950, 1960,
@@ -106,86 +122,12 @@ d3.queue()
         var to = Number(values[1]);
 
         drawContinent(world, popuByContinent, population, to);
-        
-        var extinction = extinctionByInterval(extinctionData, from, to);
-        mapExtinction(extinction, coordinates);
-        console.log(extinction);
+        mapExtinction(extinctionData, from, to, coordinates);
 
     });
 
-    // var extinctionByInterval = extinctionByInterval(extinctionData, 1500, 1900);
-    // mapExtinction(extinctionByInterval, coordinates);
 
 });
-
-
-function extinctionByInterval(data, time1, time2) {
-
-    var extinctionByInterval = [];
-    data.forEach(function(d) {
-        var value = new Object();
-        if (d.Year >= time1 && d.Year < time2) {
-            value.animalClass = d["Animal Class"];
-            value.name = d["Common Name"]; 
-            if (typeof(d["Common Name"]) == "undefined") {
-                value.name = d["Species Name"];
-                }
-            value.extinctionTime = Number(d.Year);
-            value.country = d.Countries.trim();
-            extinctionByInterval.push(value);
-        };
-    });
-
-    return extinctionByInterval; 
-
-}
-
-
-function mapExtinction(data, coordinates) {
-
-    var occurrence = countOccurrence(data);
-
-    //add coordinates
-    data.forEach(function(d) {
-        coordinates.forEach(function(e) {
-            if (e.name == d.country) {
-                d.coordinates = [Number(e.longitude), Number(e.latitude)];    
-            }
-        });
-        var country = d.country;
-        d.count = occurrence[country];
-    });
-
-    var circles = svg.selectAll("circle").data(data);
-
-    circles.enter().append("circle")
-    .merge(circles)
-    .attr("cx", function(d) { return projection(d.coordinates)[0]; })
-    .attr("cy", function(d) { return projection(d.coordinates)[1]; })
-    .transition(2000)
-    .attr("r", function(d) { return circleScale(d.count); })
-    .style("fill", " #cc0000");
-
-    circles.exit().remove();
-
-
-    //helper to count occurrence of extinction in each country
-    function countOccurrence(array) {
-        var countryList = [];
-
-        array.forEach(function(d) {
-            countryList.push(d.country);
-        });
-        countryList.sort();
-
-        var occurrence = {};
-
-        for (var i = 0, j = countryList.length; i < j; i ++) {
-            occurrence[countryList[i]] = (occurrence[countryList[i]] || 0) + 1;
-        }    
-        return occurrence;
-    }
-}
 
 
 function drawContinent(data, popuContinent, popuCountry, time) {
@@ -214,13 +156,13 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         continents.push(value);
     });
 
-        var map = svg.selectAll("path").data(continents);
+        var map = layer1.selectAll("path").data(continents);
+
         map.enter().append("path")
             .merge(map)
             .attr("d", path)
-            .transition(1200)
+            .transition(800)
             .style("fill", function(d) { return d.color; });
-
         map.exit().remove();
     } 
 
@@ -241,17 +183,93 @@ function drawContinent(data, popuContinent, popuCountry, time) {
             })
         });
 
-        var map = svg.selectAll("path").data(countries);
+        var map = layer1.selectAll("path").data(countries);
+
         map.enter().append("path")
             .merge(map)
             .attr("d", path)
-            .style("fill", function(d) { return d.color; })
-            .transition(1200);      
-
-        map.exit().remove();
+            .transition(800)
+            .style("fill", function(d) { return d.color; });
+        map.exit().remove();      
     }
-
 }
+
+
+function mapExtinction(data, from, to, coordinates) {
+
+    var data = extinctionByInterval(data, from, to);
+    var occurrence = countOccurrence(data);
+
+    //nesting data by country 
+    //add coordinates and occurrence
+    nestedData = d3.nest().key(function(d) { return d.country; })
+        .entries(data);
+
+    nestedData.forEach(function(d) {
+        coordinates.forEach(function(e) {
+            if (e.name == d.key) {
+                d.coordinates = [Number(e.longitude), Number(e.latitude)];    
+            }
+        });
+        var country = d.key
+        d.count = occurrence[country];
+    })
+
+    var circles = layer2.selectAll("circle").data(nestedData);
+
+    circles.enter().append("circle")
+    .merge(circles)
+    .attr("cx", function(d) { return projection(d.coordinates)[0]; })
+    .attr("cy", function(d) { return projection(d.coordinates)[1]; })
+    .transition(2500)
+    .attr("r", function(d) { return circleScale(d.count); })
+    .style("fill", "#cc0000")
+    .style("opacity", 0.8);
+
+    circles.exit().remove();
+
+    circles.on("click", function(d) {
+    });
+
+
+    //helper to count occurrence of extinction in each country
+    function countOccurrence(array) {
+        var countryList = [];
+
+        array.forEach(function(d) {
+            countryList.push(d.country);
+        });
+        countryList.sort();
+
+        var occurrence = {};
+
+        for (var i = 0, j = countryList.length; i < j; i ++) {
+            occurrence[countryList[i]] = (occurrence[countryList[i]] || 0) + 1;
+        }    
+        return occurrence;
+    }
+}
+
+
+//helper to create extinction dataset within the input time frame
+function extinctionByInterval(data, time1, time2) {
+    var extinctionByInterval = [];
+    data.forEach(function(d) {
+        var value = new Object();
+        if (d.Year >= time1 && d.Year < time2) {
+            value.animalClass = d["Animal Class"];
+            value.name = d["Common Name"]; 
+            if (typeof(d["Common Name"]) == "undefined") {
+                value.name = d["Species Name"];
+                }
+            value.extinctionTime = Number(d.Year);
+            value.country = d.Countries.trim();
+            extinctionByInterval.push(value);
+        };
+    });
+    return extinctionByInterval; 
+}
+
 
 // function createSlider() {
 //     var svg = d3.select("#slider"),
