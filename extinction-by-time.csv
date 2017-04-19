@@ -246,7 +246,6 @@ Bird,Hemiphaga novaeseelandiae spadicea,New Zealand pigeon,1901,Oceania,Australi
 Mammal,Notomys longicaudatus,Long-tailed hopping mouse,1901,Oceania,Australia
 Bird,Hemignathus sagittirostris,Greater 'amakihi,1901,Oceania,Hawaii
 Insect,Melanoplus spretus,Rocky Mountain locust (lived in North America),1902,North America,United States
-Mammal,Megalomys desmarestii,Antillean giant rice rat,1902,North America,Martinique
 Bird,Mergus australis,New Zealand merganser,1902,Oceania,New Zealand
 Mammal,Megalomys desmarestii,Antillean giant rice rat,1902,North America,Martinique
 Mammal,Rattus macleari,Maclear's rat,1903,Oceania,Australia
@@ -492,7 +491,7 @@ Amphibian,Bufo periglenes,Golden toad,1989,North America,Costa Rica
 Amphibian,,Atelopus longirostris,1989,South America,Ecuador
 Bird,Podilymbus gigas,Atitlan grebe,1989,North America,Guatemala
 Bird,Myadestes myadestinus,Kama'o,1989,Oceania,Hawaii
-Bird,,San Cristí_bal vermilion flycatcher,1990,South America,Ecuador 
+Bird,,San Cristobal vermilion flycatcher,1990,South America,Ecuador 
 Amphibian,Thorius infernalis,Atoyac minute salamander,1990,North America,Mexico
 Mammal,Lepus granatensis solisi,Majorcan hare,1990,Europe,Spain
 Amphibian,Thorius narismagnus,San Martin pygmy salamander,1990,North America,Mexico

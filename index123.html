@@ -9,9 +9,18 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 <link rel="stylesheet" href="css/nouislider.css" />  
 <style type="text/css">
+
+h1 {
+    font-family: "Roboto Slab";
+    color: #351212;
+    margin-left: 20px;
+
+}
+
 body {
     font-family: "Roboto", sans-serif;
-    margin: 50px;
+    margin: 30px 60px 60px 30px;
+    background-color: #fbfbfb;
 }
 
 .overlay {
@@ -31,7 +40,7 @@ body {
 
 .animalClass {
     z-index: 2;
-    color: #fff;
+    color: #fbfbfb;
     font-size: 18px;
     font-family: Roboto;
     margin-top: 4em;
@@ -41,7 +50,7 @@ body {
 
 .species {
     z-index: 2;
-    color: #efefef;
+    color: #f6f6f6;
     font-size: 16px;
     font-family: Roboto light;
     margin-top: 0.5em;
@@ -49,38 +58,70 @@ body {
 
 }
 
+.icons {
+    margin: 40px 30px 20px 75px;
+    padding: 3px;
+    border-color: #efefef;
+    border-radius: 50px;
+}
+/*
+.circles {
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(255, 115, 115, 0.6);
+    animation: pulse 2s infinite;
+}*/
+
 #slider {
     margin-bottom: 20px;
 }
 
 #countryHover {
-    font-size:80%;
+    font-size: 80%;
     color: rgb(80,0,0);
 }
 
-.mammalButton {
-    margin-top:50px;
-}
 </style>
 
 </head>
 
 <body>
+<h1>
+The Sixth Extinction
+</h1>
+
 <div id="myNav" class="overlay"></div>
 <div id="map" class="graphic"></div>
 <div id="slider" class="graphic"></div>
 <div class="buttons">
-    <input id="mammalButton" 
-            type="image" src="icons/mammal.svg" 
-            alt="Mammal" 
-            width="64" height="64"
-            value="Mammal"/>
+    <!-- image from http://www.iconninja.com/mole-mammal-animal-shape-icon-858145 -->
+    <input class="icons" id="mammalButton" type="image" src="icons/mammal.png" 
+    alt="Mammal" width="72" height="72" value="Mammal"/>
+
+    <!-- image from http://www.rw-designer.com/icon-detail/8823 -->
+    <input class="icons" id="birdButton" type="image" src="icons/bird.png" 
+    alt="Bird" width="72" height="72" value="Bird"/>
+
+    <!-- image from https://wikispaces.psu.edu/display/Herps/Christianna+Stang -->
+    <input class="icons" id="amphibianButton" type="image" src="icons/amphibian.png" 
+    alt="Amphibian" width="72" height="72" value="Amphibian"/>
+
+            <!-- image from http://www.clipartbest.com/fish-icon-png -->
+    <input class="icons" id="fishButton" type="image" src="icons/fish.png" 
+    alt="Fish" width="72" height="72" value="Fish"/>
+
+    <!-- image from http://www.iconsdb.com/black-icons/ant-3-icon.html -->
+    <input class="icons" id="insectButton" type="image" src="icons/insect.png" 
+    alt="Insect" width="72" height="72" value="Insect"/>
+
+    <!-- image from http://www.clker.com/clipart-black-shrimp-icon.html -->
+    <input class="icons" id="crustaceanButton" type="image" src="icons/crustacean.png" 
+    alt="Crustacean" width="72" height="72" value="Crustacean"/>
 </div>
 
 <script type="text/javascript">
 
 var width = 1400,
-    height = 500
+    height = 500,
     padding = 20;
 
 //Setting projection
@@ -137,7 +178,7 @@ d3.queue()
         connect: true,
         behaviour: "drag",
         range: range_all_sliders,
-        start: [ 1900, 2010 ],
+        start: [ 1800, 2010 ],
         pips: {
             mode: 'values',
             values: [1500, 1600, 1700, 1800, 1900, 1950, 1960,
@@ -156,14 +197,58 @@ d3.queue()
     });
 
 
-    var mammalExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Mammal"; });
-    console.log(mammalExtinction);
+    //show extinction by animal class selection
 
-    var mammal = d3.select(".buttons");
-    mammal.on("click", function() {
+    var mammalExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Mammal"; });
+    var birdExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Bird"; });
+    var amphibianExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Amphibian"; });
+    var fishExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Fish"; });
+    var insectExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Insect"; });
+    var crustaceanExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Crustacean"; });
+
+    d3.select("#mammalButton")
+    .on("click", function() {
         var yearRange = slider.noUiSlider.get();
-        mapExtinction(mammalExtinction, yearRange[0], yearRange[1], coordinates, "green");
+        mapExtinction(mammalExtinction, yearRange[0], yearRange[1], coordinates, "#ffcc00");
     });
+
+    d3.select("#birdButton")
+    .on("click", function() {
+        var yearRange = slider.noUiSlider.get();
+        mapExtinction(birdExtinction, yearRange[0], yearRange[1], coordinates, "#ff8c1a");
+    });
+
+    d3.select("#amphibianButton")
+    .on("click", function() {
+        var yearRange = slider.noUiSlider.get();
+        mapExtinction(amphibianExtinction, yearRange[0], yearRange[1], coordinates, "#C26C55");
+    });
+
+    d3.select("#fishButton")
+    .on("click", function() {
+        var yearRange = slider.noUiSlider.get();
+        mapExtinction(fishExtinction, yearRange[0], yearRange[1], coordinates, "#C23C5F");
+    });
+
+    d3.select("#insectButton")
+    .on("click", function() {
+        var yearRange = slider.noUiSlider.get();
+        mapExtinction(insectExtinction, yearRange[0], yearRange[1], coordinates, "#f53dc7");
+    });
+
+    d3.select("#crustaceanButton")
+    .on("click", function() {
+        var yearRange = slider.noUiSlider.get();
+        mapExtinction(crustaceanExtinction, yearRange[0], yearRange[1], coordinates, "#751aff");
+    });
+
+    d3.selectAll(".icons")
+    .on("mouseover", function() {
+        d3.select(this).style("background-color", "#e4e2e2");
+    })
+    .on("mouseout", function() {
+        d3.select(this).style("background-color", "transparent");
+    });;
 
 });
 
@@ -194,15 +279,17 @@ function mapExtinction(data, from, to, coordinates, color) {
 
     circles.enter().append("circle")
     .merge(circles)
+    .attr("class", "circles")
     .attr("cx", function(d) { return projection(d.coordinates)[0]; })
     .attr("cy", function(d) { return projection(d.coordinates)[1]; })
-    .transition(2000)
+    .transition(4000)
     .attr("r", function(d) { return circleScale(d.count); })
     .style("fill", color)
     .style("opacity", 0.8);
 
+
+    //country names on hover
     var countryHover = d3.select("body")
-        .attr("id", "countryHover")
         .append("div")
         .style("position", "absolute")
         .style("z-index", "10")
@@ -237,9 +324,7 @@ function mapExtinction(data, from, to, coordinates, color) {
             };
         });
 
-        console.log(classList);
-        console.log(arrayOfValues);
-        console.log(nestedData);
+        classList.sort();
 
         d3.select(".overlay").style("width", "100%").style("height", "100%").style("opacity", 0.9);
 
