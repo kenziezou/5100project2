@@ -36,7 +36,7 @@ body {
     font-family: Roboto;
     margin-top: 4em;
     margin-bottom: 4em;
-    margin-left: 30%;
+    margin-left: 35%;
 }
 
 .species {
@@ -46,7 +46,6 @@ body {
     font-family: Roboto light;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-/*    margin-left: 20%;*/
 
 }
 
@@ -128,7 +127,7 @@ d3.queue()
 
     noUiSlider.create(slider, {
         connect: true,
-        behaviour: "tap",
+        behaviour: "drag",
         range: range_all_sliders,
         start: [ 1900, 2010 ],
         pips: {
@@ -173,7 +172,6 @@ function mapExtinction(data, from, to, coordinates) {
 
     var circles = layer2.selectAll("circle").data(nestedData);
 
-
     circles.exit().remove();
 
     circles.enter().append("circle")
@@ -192,6 +190,7 @@ function mapExtinction(data, from, to, coordinates) {
         .style("z-index", "10")
         .style("visibility", "hidden");
 
+    //mouseover functions
     circles
     .on("mouseover", function(d) { 
         d3.select(this).style("cursor", "pointer");
@@ -221,8 +220,10 @@ function mapExtinction(data, from, to, coordinates) {
         });
 
         console.log(classList);
+        console.log(arrayOfValues);
+        console.log(nestedData);
 
-        d3.select(".overlay").style("width", "100%").style("height", "100%").style("opacity", 0.85);
+        d3.select(".overlay").style("width", "100%").style("height", "100%").style("opacity", 0.9);
 
         classList.forEach(function(d) {
             d3.select("#myNav").append("div")
@@ -325,7 +326,7 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         map.enter().append("path")
             .merge(map)
             .attr("d", path)
-            .transition(800)
+            .transition(300)           
             .style("fill", function(d) { return d.color; });
         map.exit().remove();
     } 
@@ -352,8 +353,9 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         map.enter().append("path")
             .merge(map)
             .attr("d", path)
-            .transition(800)
-            .style("fill", function(d) { return d.color; });
+            .transition(300)
+            .style("fill", function(d) { return d.color; })
+            ;
         map.exit().remove();      
     }
 }
