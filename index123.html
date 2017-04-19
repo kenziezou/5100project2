@@ -80,6 +80,7 @@ body {
     color: rgb(80,0,0);
 }
 
+/*pulse animation code from http://codepen.io/olam/pen/zcqea*/
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(255, 115, 115, 0.7);
@@ -308,8 +309,7 @@ function mapExtinction(data, from, to, coordinates, color) {
     //mouseover functions
     circles
     .on("mouseover", function(d) { 
-        d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; })
-        .style("opacity", 1);
+        d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; }).style("opacity", 1);
         return countryHover
         .style("visibility", "visible")
         .style("background", "white")
@@ -319,13 +319,11 @@ function mapExtinction(data, from, to, coordinates, color) {
         })
 
     .on("mousemove", function() { 
-        d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; })
-        .style("opacity", 1);
+        d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; }).style("opacity", 1);
         return countryHover.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px"); })
 
     .on("mouseout", function() { 
-        d3.select(this).attr("r", function(d) { return circleScale(d.count); })
-        .style("opacity", 0.8);
+        d3.select(this).attr("r", function(d) { return circleScale(d.count); }).style("opacity", 0.8);
         return countryHover.style("visibility", "hidden") })
 
 
