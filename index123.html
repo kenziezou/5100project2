@@ -63,7 +63,7 @@ body {
     padding: 3px;
     border-color: #efefef;
     border-radius: 50px;
-    box-shadow: 0 0 0 rgba(255, 115, 115, 0.7);
+    box-shadow: 0 0 0 rgba(200, 50, 50, 0.3);
     animation: pulse 2s infinite;
 }
 
@@ -83,13 +83,13 @@ body {
 /*pulse animation code from http://codepen.io/olam/pen/zcqea*/
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 115, 115, 0.7);
+    box-shadow: 0 0 0 0 rgba(200, 50, 50, 0.3);
   }
   70% {
-      box-shadow: 0 0 5px 10px rgba(255, 115, 115, 0);
+      box-shadow: 0 0 2px 5px rgba(200, 50, 50, 0);
   }
   100% {
-      box-shadow: 0 0 0 0 rgba(255, 115, 115, 0);
+      box-shadow: 0 0 0 0 rgba(200, 50, 50, 0);
   }
 }
 </style>
@@ -279,7 +279,7 @@ function mapExtinction(data, from, to, coordinates, color) {
         d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; }).style("opacity", 1);
         return countryHover
         .style("visibility", "visible")
-        .style("background", "#b8c7d7")
+        .style("background", "#e8edf2")
         .style("padding", 2)
         .style("opacity", 0.75)
         .text(d.key); 
@@ -379,10 +379,9 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     //find maximum population density
     var maxPopu = d3.max(popuCountry, function (d) {return d[2010];});
 
-    var color = ["#e8edf2", "#dbe5ef", "#d7e2ee", "#bac7d6", "#abbaca", "#9dadbe", "#8da0b3", "#7d92a8", "#758ba2", 
-                "#758ba2", "#667e97", "#5e7791", "#56708c", "#4e6a86", "#466381", "#3e5c7b"];
+    var color = ["#e8edf2", "#80a5cc", "#6d86a1", "#425871", "#142538"];
 
-    var colorScale = d3.scaleLinear().domain([0, Math.log(maxPopu)]).range(color);
+    var colorScale = d3.scaleLinear().domain([0, 100, 200, 400, 600, maxPopu]).range(color);
 
 
     //draw map with population by continents
