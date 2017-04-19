@@ -12,7 +12,7 @@
 
 h1 {
     font-family: "Roboto Slab", serif;
-    color: #cc0000;
+    color: #9f0404;
     margin-left: 20px;
 
 }
@@ -20,7 +20,7 @@ h1 {
 body {
     font-family: "Roboto", sans-serif;
     margin: 30px 60px 60px 30px;
-    background-color: #0e151c;
+    background-color: #f6f6f6;
 }
 
 .overlay {
@@ -30,7 +30,7 @@ body {
     top: 0;
     position: absolute;
     z-index: 1;
-    background-color: #cc0000;
+    background-color: #9f0404;
     overflow-y: scroll;
 }
 
@@ -129,12 +129,6 @@ The Sixth Extinction
     <input class="icons" id="crustaceanButton" type="image" src="icons/crustacean.png" 
     alt="Crustacean" width="72" height="72" value="Crustacean"/>
 </div>
-<div id="toggle">
-    <input name="updateButton" 
-           type="button" 
-           value="Update" 
-           onclick="updateData()" />
-</div>
 
 <script type="text/javascript">
 
@@ -228,7 +222,7 @@ d3.queue()
         mapExtinction(dataByClass, yearRange[0], yearRange[1], coordinates, animalClassColors[i])
     })
     .on("mouseover", function() {
-        d3.select(this).style("background-color", "#cc0000");
+        d3.select(this).style("background-color", "#efecec");
     })
     .on("mouseout", function() {
         d3.select(this).style("background-color", "transparent");
@@ -276,6 +270,7 @@ function mapExtinction(data, from, to, coordinates, color) {
         .append("div")
         .style("position", "absolute")
         .style("z-index", "10")
+        .style("border-radius", 20)
         .style("visibility", "hidden");
 
     //mouseover functions
@@ -284,9 +279,9 @@ function mapExtinction(data, from, to, coordinates, color) {
         d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; }).style("opacity", 1);
         return countryHover
         .style("visibility", "visible")
-        .style("background", "white")
+        .style("background", "#b8c7d7")
         .style("padding", 2)
-        .style("opacity", 0.8)
+        .style("opacity", 0.75)
         .text(d.key); 
         })
 
@@ -384,8 +379,8 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     //find maximum population density
     var maxPopu = d3.max(popuCountry, function (d) {return d[2010];});
 
-    var color = ["#c3d1e0", "#b8c7d7", "#abbaca", "#9dadbe", "#8da0b3", "#7d92a8", "#758ba2", "#758ba2", "#667e97", 
-                "#5e7791", "#56708c", "#4e6a86", "#466381", "#3e5c7b", "#385776", "#335171", "#274767"];
+    var color = ["#e8edf2", "#dbe5ef", "#d7e2ee", "#bac7d6", "#abbaca", "#9dadbe", "#8da0b3", "#7d92a8", "#758ba2", 
+                "#758ba2", "#667e97", "#5e7791", "#56708c", "#4e6a86", "#466381", "#3e5c7b"];
 
     var colorScale = d3.scaleLinear().domain([0, Math.log(maxPopu)]).range(color);
 
@@ -411,9 +406,7 @@ function drawContinent(data, popuContinent, popuCountry, time) {
             .merge(map)
             .attr("d", path)
             .transition(300)           
-            .style("fill", function(d) { return d.color; })
-            .style("stroke-width", 0.5)
-            .style("stroke", "#8da0b3");
+            .style("fill", function(d) { return d.color; });
         map.exit().remove();
     } 
 
@@ -441,9 +434,7 @@ function drawContinent(data, popuContinent, popuCountry, time) {
             .merge(map)
             .attr("d", path)
             .transition(300)
-            .style("fill", function(d) { return d.color; })
-            .style("stroke-width", 0.5)
-            .style("stroke", "#8da0b3");
+            .style("fill", function(d) { return d.color; });
         map.exit().remove();      
     }
 }
