@@ -253,8 +253,6 @@ function mapExtinction(data, from, to, coordinates, color) {
 
     var circles = layer2.selectAll("circle").data(nestedData);
 
-    circles.exit().remove();
-
     circles.enter().append("circle")
     .merge(circles)
     .attr("class", "circles")
@@ -265,6 +263,8 @@ function mapExtinction(data, from, to, coordinates, color) {
     .style("fill", color)
     .style("opacity", 0.8);
 
+    circles.exit().remove();
+
     //country names on hover
     var countryHover = d3.select("body")
         .append("div")
@@ -274,7 +274,7 @@ function mapExtinction(data, from, to, coordinates, color) {
         .style("visibility", "hidden");
 
     //mouseover functions
-    circles
+    d3.selectAll(".circles")
     .on("mouseover", function(d) { 
         d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; }).style("opacity", 1);
         return countryHover
@@ -284,18 +284,15 @@ function mapExtinction(data, from, to, coordinates, color) {
         .style("opacity", 0.75)
         .text(d.key); 
         })
-
     .on("mousemove", function() { 
         d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; }).style("opacity", 1);
         return countryHover.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px"); })
-
     .on("mouseout", function() { 
-        d3.select(this).attr("r", function(d) { return circleScale(d.count); }).style("opacity", 0.8);
+        d3.select(this).attr("r", function(d) { return circleScale(d.count); }).style("opacity", 0.8)
         return countryHover.style("visibility", "hidden") })
 
-
-    //show extinct animal list of that country within selected time frame
-    circles.on("click", function(d) {
+    //show extinct animal list of that country within selected time frame on click
+    .on("click", function(d) {
         var arrayOfValues = d.values;
 
         var classList = [];
@@ -381,7 +378,7 @@ function drawContinent(data, popuContinent, popuCountry, time) {
 
     var color = ["#e8edf2", "#80a5cc", "#6d86a1", "#425871", "#142538"];
 
-    var colorScale = d3.scaleLinear().domain([0, 100, 200, 400, 600, maxPopu]).range(color);
+    var colorScale = d3.scaleLinear().domain([0, 100, 200, 500, maxPopu]).range(color);
 
 
     //draw map with population by continents
@@ -433,140 +430,14 @@ function drawContinent(data, popuContinent, popuCountry, time) {
             .merge(map)
             .attr("d", path)
             .transition(300)
+            .style("stroke", "#425871")
+            .style("stroke-width", 0.5)
+            .style("stroke-opacity", 0.1)
             .style("fill", function(d) { return d.color; });
         map.exit().remove();      
     }
 }
-// function createSlider() {
-//     var svg = d3.select("#slider"),
-//     margin = {right: 50, left: 50},
-//     width = width - margin.left - margin.right,
-//     height = 200;
 
-//     var x = d3.scaleLinear()
-//         .domain([0, 180])
-//         .range([0, width])
-//         .clamp(true);
-
-//     var slider = svg.append("g")
-//         .attr("class", "slider")
-//         .attr("transform", "translate(" + margin.left + "," + height / 2 + ")");
-
-//     slider.append("line")
-//         .attr("class", "track")
-//         .attr("x1", 0)
-//         .attr("x2", 800)
-//       .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-//         .attr("class", "track-inset")
-//       .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-//         .attr("class", "track-overlay")
-//         .call(d3.drag()
-//             .on("start.interrupt", function() { slider.interrupt(); })
-//             .on("start drag", function() { hue(x.invert(d3.event.x)); }));
-
-//     slider.insert("g", ".track-overlay")
-//         .attr("class", "ticks")
-//         .attr("transform", "translate(0," + 20 + ")")
-//       .selectAll("text")
-//       .data(x.ticks(100))
-//       .enter().append("text")
-//         .attr("x", x)
-//         .attr("text-anchor", "middle")
-//         .text(function(d) { return d; });
-
-//     var handle = slider.insert("circle", ".track-overlay")
-//         .attr("class", "handle")
-//         .attr("r", 9);
-
-//     var handle2 = slider.insert("circle", ".track-overlay")
-//         .attr("class", "handle")
-//         .attr("cx", 500)
-//         .attr("r", 9);
-
-//     // slider.transition() // Gratuitous intro!
-//     //     .duration(750)
-//     //     .tween("hue", function() {
-//     //       var i = d3.interpolate(0, 70);
-//     //       return function(t) { hue(i(t)); };
-//     //     });
-
-//     // function hue(h) {
-//     //   handle.attr("cx", x(h));
-//     //   svg.style("background-color", d3.hsl(h, 0.8, 0.8));
-//     // }
-// }
-
-// function createSlider() {
-//     scale = d3.scaleLinear().domain([1500, 2010]).range([padding, width-padding]);
-//     slider = d3.select("#range-slider")
-
-//     drag = d3.drag()
-//     .on "drag", ()
-// }
-
-// function drawCountry(data, popu, time) {
-//   var countries = topojson.feature(data, data.objects.countries).features;
-//   var max = d3.max(popu, function (d) {return d[2010];});
-//   var colorScale = d3.scaleLinear().domain([0, Math.log(max)]).range(['#f0f0f0','#d9d9d9','#bdbdbd','#969696','#737373','#525252','#252525','#000000']);
-
-//   var populationAtTime = [];
-
-//   popu.forEach(function(d) {
-//     var object = new Object();
-//     object.id = d.id;
-//     console.log(d.time);
-//     object.population = d.time;
-//     populationAtTime.push(object);
-//   });
-
-//   // console.log(populationAtTime);
-
-//   var map = svg.selectAll("path.land").data(countries)
-//   .enter().append("path")
-//   .attr("class", "land")
-//   .attr("d", path)
-//   .style("stroke", "white")
-//   ;
-// }
-
-
-
-// function extinctionByTime(data) {
-//   var extinctionByTime = [];
-//   var timeSeries = [1500, 1600, 1700, 1800, 1900, 1950, 1960, 1970, 1980, 1990, 2000, 2010];
-//   timeSeries.forEach(function(d, i) {
-      
-//       var value = new Object();
-//       var temp = [];
-//       if (i == 0) {
-//           value.year = d;
-//       } else {
-//           var leftTime = timeSeries[i - 1];
-//           var rightTime = timeSeries[i];
-//           data.forEach(function(d) {
-//               value.year = rightTime;
-//               if (d.Year >= leftTime && d.Year < rightTime) {
-//                   var tmp = new Object();
-//                   tmp.animalClass = d["Animal Class"];
-//                   var specieName = d["Species Name"];
-//                   var commonName = d["Common Name"];
-//                   if (typeof(commonName) == "undefined")
-//                       tmp.name = specieName;
-//                   else tmp.name = commonName;
-//                   if (typeof(tmp.name) == "undefined")
-//                       console.log("warning, undefined name");
-//                   tmp.extinctionTime = d.Year;
-//                   var country = d.Countries.split(",");
-//                   tmp.country = country;
-//                   temp.push(tmp);
-//               }
-//           });
-//       }
-//       value.extinction = temp;
-//       extinctionByTime.push(value);
-//   });
-//   return extinctionByTime;
-// }
 </script>
 
 </body>
