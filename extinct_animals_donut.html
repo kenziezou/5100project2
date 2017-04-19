@@ -2,14 +2,6 @@
 <meta charset="utf-8">
 <style>
 
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 10px;
-  width: 960px;
-  height: 500px;
-  position: relative;
-}
-
 .axis path, .axis line {
     fill: none;
     stroke: #000;
@@ -26,10 +18,10 @@ body {
     stroke-width: 1.5px;
 }
 
-.overlay {
+/*.overlay1 {
     fill: none;
     pointer-events: all;
-}
+}*/
 
 .focus circle {
     fill: none;
@@ -82,6 +74,7 @@ form {
 }
 </style>
 <body>
+<h1>Severity of animal endangerment proportion</h1>
 <form>
 <label><input type="radio" name="dataset" id="dataset" value="total" checked>IUCN Red List Categories (All Animals)</label>
 <label><input type="radio" name="dataset" id="dataset" value="option1">Amphibians</label>
@@ -95,17 +88,19 @@ form {
 //Consulted the following   reference http://bl.ocks.org/juan-cb/1984c7f2b446fffeedde
 d3.select("input[value=\"total\"]").property("checked", true);
 
-var svg = d3.select("body")
+var svg3 = d3.select("body")
 	.append("svg")
+    .attr("width", 960)
+    .attr("height", 500)
 	.append("g")
 
-svg.append("g")
+svg3.append("g")
 	.attr("class", "slices");
-svg.append("g")
+svg3.append("g")
 	.attr("class", "labelName");
-svg.append("g")
+svg3.append("g")
 	.attr("class", "labelValue");
-svg.append("g")
+svg3.append("g")
 	.attr("class", "lines");
 
 var width = 960,
@@ -132,7 +127,7 @@ var legendSpacing = radius * 0.02;
 
 var div = d3.select("body").append("div").attr("class", "toolTip");
 
-svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
 var colorRange = ["#FFCFB2", "#FFA670", "#FF7F30", 
@@ -193,7 +188,7 @@ function selectDataset()
 function change(data) {
 
 	/* ------- PIE SLICES -------*/
-	var slice = svg.select(".slices").selectAll("path.slice")
+	var slice = svg3.select(".slices").selectAll("path.slice")
         .data(pie(data), function(d){ return d.data.label });
 
     slice.enter()
@@ -226,7 +221,7 @@ function change(data) {
     slice.exit()
         .remove();
 
-    var legend = svg.selectAll('.legend')
+    var legend = svg3.selectAll('.legend')
         .data(color.domain())
         .enter()
         .append('g')
@@ -252,7 +247,7 @@ function change(data) {
 
     /* ------- TEXT LABELS -------*/
 
-    var text = svg.select(".labelName").selectAll("text")
+    var text = svg3.select(".labelName").selectAll("text")
         .data(pie(data), function(d){ return d.data.label });
 
     text.enter()
@@ -298,7 +293,7 @@ function change(data) {
 
     /* ------- SLICE TO TEXT POLYLINES -------*/
 
-    var polyline = svg.select(".lines").selectAll("polyline")
+    var polyline = svg3.select(".lines").selectAll("polyline")
         .data(pie(data), function(d){ return d.data.label });
 
     polyline.enter()
