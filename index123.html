@@ -11,8 +11,8 @@
 <style type="text/css">
 
 h1 {
-    font-family: "Roboto Slab";
-    color: #351212;
+    font-family: "Roboto Slab", serif;
+    color: #cc0000;
     margin-left: 20px;
 
 }
@@ -20,7 +20,7 @@ h1 {
 body {
     font-family: "Roboto", sans-serif;
     margin: 30px 60px 60px 30px;
-    background-color: #fbfbfb;
+    background-color: #0e151c;
 }
 
 .overlay {
@@ -30,7 +30,7 @@ body {
     top: 0;
     position: absolute;
     z-index: 1;
-    background-color: rgb(80,0,0);
+    background-color: #cc0000;
     overflow-y: scroll;
 }
 
@@ -42,7 +42,7 @@ body {
     z-index: 2;
     color: #fbfbfb;
     font-size: 18px;
-    font-family: Roboto;
+    font-family: "Roboto", sans-serif;
     margin-top: 4em;
     margin-bottom: 4em;
     margin-left: 35%;
@@ -52,7 +52,7 @@ body {
     z-index: 2;
     color: #f6f6f6;
     font-size: 16px;
-    font-family: Roboto light;
+    font-family: "Roboto light", sans-serif;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 
@@ -106,7 +106,7 @@ The Sixth Extinction
 <div id="slider" class="graphic"></div>
 <div class="buttons">
     <!-- image from http://www.iconninja.com/mole-mammal-animal-shape-icon-858145 -->
-    <input class="icons" id="mammalButton" type="image" src="icons/mammal.png" 
+    <input class="icons" id="mammalExtinction" type="image" src="icons/mammal.png" 
     alt="Mammal" width="72" height="72" value="Mammal"/>
 
     <!-- image from http://www.rw-designer.com/icon-detail/8823 -->
@@ -128,6 +128,12 @@ The Sixth Extinction
     <!-- image from http://www.clker.com/clipart-black-shrimp-icon.html -->
     <input class="icons" id="crustaceanButton" type="image" src="icons/crustacean.png" 
     alt="Crustacean" width="72" height="72" value="Crustacean"/>
+</div>
+<div id="toggle">
+    <input name="updateButton" 
+           type="button" 
+           value="Update" 
+           onclick="updateData()" />
 </div>
 
 <script type="text/javascript">
@@ -211,56 +217,22 @@ d3.queue()
 
     //show extinction by animal class selection
 
-    var mammalExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Mammal"; });
-    var birdExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Bird"; });
-    var amphibianExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Amphibian"; });
-    var fishExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Fish"; });
-    var insectExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Insect"; });
-    var crustaceanExtinction = extinctionData.filter(function(d) { return d["Animal Class"] == "Crustacean"; });
+    var animalClassColors = ["#ffcc00","#ff8c1a","#C26C55","#C23C5F","#f53dc7","#751aff"];
 
-    d3.select("#mammalButton")
-    .on("click", function() {
+    var allButtons = d3.selectAll(".icons");
+
+    allButtons.on("click", function(d, i) {
+        var animalValue = String(this.value);
+        var dataByClass = extinctionData.filter(function(d) { return d["Animal Class"] == animalValue; });
         var yearRange = slider.noUiSlider.get();
-        mapExtinction(mammalExtinction, yearRange[0], yearRange[1], coordinates, "#ffcc00");
-    });
-
-    d3.select("#birdButton")
-    .on("click", function() {
-        var yearRange = slider.noUiSlider.get();
-        mapExtinction(birdExtinction, yearRange[0], yearRange[1], coordinates, "#ff8c1a");
-    });
-
-    d3.select("#amphibianButton")
-    .on("click", function() {
-        var yearRange = slider.noUiSlider.get();
-        mapExtinction(amphibianExtinction, yearRange[0], yearRange[1], coordinates, "#C26C55");
-    });
-
-    d3.select("#fishButton")
-    .on("click", function() {
-        var yearRange = slider.noUiSlider.get();
-        mapExtinction(fishExtinction, yearRange[0], yearRange[1], coordinates, "#C23C5F");
-    });
-
-    d3.select("#insectButton")
-    .on("click", function() {
-        var yearRange = slider.noUiSlider.get();
-        mapExtinction(insectExtinction, yearRange[0], yearRange[1], coordinates, "#f53dc7");
-    });
-
-    d3.select("#crustaceanButton")
-    .on("click", function() {
-        var yearRange = slider.noUiSlider.get();
-        mapExtinction(crustaceanExtinction, yearRange[0], yearRange[1], coordinates, "#751aff");
-    });
-
-    d3.selectAll(".icons")
+        mapExtinction(dataByClass, yearRange[0], yearRange[1], coordinates, animalClassColors[i])
+    })
     .on("mouseover", function() {
-        d3.select(this).style("background-color", "rgb(255, 115, 115)");
+        d3.select(this).style("background-color", "#cc0000");
     })
     .on("mouseout", function() {
         d3.select(this).style("background-color", "transparent");
-    });;
+    });
 
 });
 
@@ -341,7 +313,7 @@ function mapExtinction(data, from, to, coordinates, color) {
 
         classList.sort();
 
-        d3.select(".overlay").style("width", "100%").style("height", "100%").style("opacity", 0.9);
+        d3.select(".overlay").style("width", "100%").style("height", "100%").style("opacity", 0.95);
 
         classList.forEach(function(d) {
             d3.select("#myNav").append("div")
@@ -366,14 +338,6 @@ function mapExtinction(data, from, to, coordinates, color) {
     });
 }
 
-
-function showExtinction(data) {
-    console.log(data);
-    var svg1 = d3.select("#myNav").append("svg").attr("width", width).attr("height", height);
-
-    svg1.data(data).enter()
-    .text("text", "text");
-}
 
 //helper to count occurrence of extinction in each country
 function countOccurrence(array) {
@@ -420,11 +384,13 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     //find maximum population density
     var maxPopu = d3.max(popuCountry, function (d) {return d[2010];});
 
-    var color = ['#ebf2fa','#d6e6f5','#c2d9f0','#adcceb','#99bfe6','#85b3e0','#70a6db','#5c99d6','#478cd1','#3380cc', 
-    '#2e73b8','#2966a3','#24598f','#1f4d7a'];
+    var color = ["#c3d1e0", "#b8c7d7", "#abbaca", "#9dadbe", "#8da0b3", "#7d92a8", "#758ba2", "#758ba2", "#667e97", 
+                "#5e7791", "#56708c", "#4e6a86", "#466381", "#3e5c7b", "#385776", "#335171", "#274767"];
 
     var colorScale = d3.scaleLinear().domain([0, Math.log(maxPopu)]).range(color);
 
+
+    //draw map with population by continents
     if (time < 1960) {
         //creating data to draw continents
         //code simplified from http://geojson.org/geojson-spec.html#introduction
@@ -445,10 +411,13 @@ function drawContinent(data, popuContinent, popuCountry, time) {
             .merge(map)
             .attr("d", path)
             .transition(300)           
-            .style("fill", function(d) { return d.color; });
+            .style("fill", function(d) { return d.color; })
+            .style("stroke-width", 0.5)
+            .style("stroke", "#8da0b3");
         map.exit().remove();
     } 
 
+    //draw map with population by countries
     else {
         popuIdAndTime = [];
 
@@ -473,7 +442,8 @@ function drawContinent(data, popuContinent, popuCountry, time) {
             .attr("d", path)
             .transition(300)
             .style("fill", function(d) { return d.color; })
-            ;
+            .style("stroke-width", 0.5)
+            .style("stroke", "#8da0b3");
         map.exit().remove();      
     }
 }
