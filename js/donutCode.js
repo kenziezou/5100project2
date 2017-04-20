@@ -14,7 +14,7 @@ var svg3 = d3.select("body")
     .attr("class", "donutChart")
     .attr("width", svgWidth)
     .attr("height", svgHeight)
-    .append("g")
+    .append("g");
 
 svg3.append("g")
   .attr("class", "slices");
@@ -243,7 +243,7 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#9f0404","#cc0000", "#7F1C1B","#c83839","#d45555","#e17172"];
+var colorRange = ["#9f0404","#cc0000", "#7F1C1B","#c83839","#dc6b6c","#e38687"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [

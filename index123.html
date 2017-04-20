@@ -17,11 +17,14 @@ h1 {
     font-size: 500%;
 }
 
-h3 {
+h2 {
     font-family: "Roboto Slab", serif;
     color: #9f0404;
     margin-left: 20px;
     font-size: 200%;
+}
+
+h3 {
 }
 
 body {
@@ -31,6 +34,11 @@ body {
     color: #6d86a1;
 }
 
+#twoColumn {
+    column-count: 2;
+    margin-left: 175px;
+    margin-right:125px;
+}
 .overlay {
     height: 0;
     width: 100%;
@@ -150,10 +158,6 @@ polyline{
     margin-bottom: 40px;
 }
 
-#secondChart {
-    fill: #9f0404;
-}
-
 </style>
 
 </head>
@@ -199,8 +203,9 @@ The Sixth Extinction
  -->
  <div id="donut" class="graphic">
 <br>
-<h3>The IUCN Red List</h3>
+<h2>The IUCN Red List</h2>
 <br>
+<h3 id="twoColumn">All Animal Species<br>"At Risk" Species</h3>
 <script src="js/donutCode.js"></script>
 </div>
 <script type="text/javascript">
