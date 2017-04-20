@@ -4,8 +4,8 @@
 
 //First donut chart: animal category at risk
 
-var svgWidth = 550,
-    svgHeight = 400;
+var svgWidth = 650,
+    svgHeight = 550;
 
 d3.select("input[value=\"total\"]").property("checked", true);
 
@@ -25,8 +25,8 @@ svg3.append("g")
 svg3.append("g")
   .attr("class", "lines");
 
-var width = 450,
-    height = 400,
+var width = 600,
+    height = 500,
   radius = Math.min(width, height) / 2;
 
 var pie = d3.pie()
@@ -63,140 +63,6 @@ datasetTotal = [
 change(datasetTotal);
 d3.selectAll("input")
   .on("change", selectDataset);
-
-function change(data) {
-
-  /* ------- PIE SLICES -------*/
-  var slice = svg3.select(".slices").selectAll("path.slice")
-        .data(pie(data), function(d){ return d.data.label });
-
-    slice.enter()
-        .insert("path")
-        .style("fill", function(d) { return color(d.data.label); })
-        .attr("class", "slice");
-
-    slice
-        .transition().duration(1000)
-        .attrTween("d", function(d) {
-            this._current = this._current || d;
-            var interpolate = d3.interpolate(this._current, d);
-            this._current = interpolate(0);
-            return function(t) {
-                return arc(interpolate(t));
-            };
-        })
-    slice
-        .on("mousemove", function(d){
-            div.style("left", d3.event.pageX+10+"px");
-            div.style("top", d3.event.pageY-25+"px");
-            div.style("display", "inline-block");
-            div.html((d.data.label)+": "+(d.data.definition)+"Total number: "+(d.data.number)+" species");
-        });
-    slice
-        .on("mouseout", function(d){
-            div.style("display", "none");
-        });
-
-    slice.exit()
-        .remove();
-
-    var legend = svg3.selectAll('.legend')
-        .data(color.domain())
-        .enter()
-        .append('g')
-        .attr('class', 'legend')
-        .attr('transform', function(d, i) {
-            var height = legendRectSize + legendSpacing;
-            var offset =  height * color.domain().length / 2;
-            var horz = -3 * legendRectSize;
-            var vert = i * height - offset;
-            return 'translate(' + horz + ',' + vert + ')';
-        });
-
-    legend.append('rect')
-        .attr('width', legendRectSize)
-        .attr('height', legendRectSize)
-        .style('fill', color)
-        .style('stroke', color);
-
-    legend.append('text')
-        .attr('x', legendRectSize + legendSpacing)
-        .attr('y', legendRectSize - legendSpacing)
-        .text(function(d) { return d; });
-
-    /* ------- TEXT LABELS -------*/
-
-    var text = svg3.select(".labelName").selectAll("text")
-        .data(pie(data), function(d){ return d.data.label });
-
-    text.enter()
-        .append("text")
-        .attr("dy", ".35em")
-        .text(function(d) {
-            return (d.value+"%");
-        });
-
-    d3.select("svg.donutChart").append("text").attr("dy", "2em").text("All Animal Species");
-
-
-    function midAngle(d){
-        return d.startAngle + (d.endAngle - d.startAngle)/2;
-    }
-
-    text
-        .transition().duration(1000)
-        .attrTween("transform", function(d) {
-            this._current = this._current || d;
-            var interpolate = d3.interpolate(this._current, d);
-            this._current = interpolate(0);
-            return function(t) {
-                var d2 = interpolate(t);
-                var pos = outerArc.centroid(d2);
-                pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
-                return "translate("+ pos +")";
-            };
-        })
-        .styleTween("text-anchor", function(d){
-            this._current = this._current || d;
-            var interpolate = d3.interpolate(this._current, d);
-            this._current = interpolate(0);
-            return function(t) {
-                var d2 = interpolate(t);
-                return midAngle(d2) < Math.PI ? "start":"end";
-            };
-        })
-        .text(function(d) {
-            return (d.value+"%");
-        });
-
-
-    text.exit()
-        .remove();
-
-    /* ------- SLICE TO TEXT POLYLINES -------*/
-
-    var polyline = svg3.select(".lines").selectAll("polyline")
-        .data(pie(data), function(d){ return d.data.label });
-
-    polyline.enter()
-        .append("polyline");
-
-    polyline.transition().duration(1000)
-        .attrTween("points", function(d){
-            this._current = this._current || d;
-            var interpolate = d3.interpolate(this._current, d);
-            this._current = interpolate(0);
-            return function(t) {
-                var d2 = interpolate(t);
-                var pos = outerArc.centroid(d2);
-                pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-                return [arc.centroid(d2), outerArc.centroid(d2), pos];
-            };
-        });
-
-    polyline.exit()
-        .remove();
-};
 
 change(datasetTotal);
 
@@ -323,7 +189,7 @@ function change(data) {
         .attr('transform', function(d, i) {
             var height = legendRectSize + legendSpacing;
             var offset =  height * color.domain().length / 2.1;
-            var horz = -3.3 * legendRectSize;
+            var horz = -3 * legendRectSize;
             var vert = i * height - offset;
             return 'translate(' + horz + ',' + vert + ')';
         });

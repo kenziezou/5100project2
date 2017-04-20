@@ -20,10 +20,13 @@ h1 {
 h2 {
     font-family: "Roboto Slab", serif;
     color: #9f0404;
-    margin-left: 20px;
+    margin-left: 40px;
     font-size: 200%;
 }
 
+h3 {
+    margin-left: 40px;
+}
 
 body {
     font-family: "Roboto", sans-serif;
@@ -32,11 +35,6 @@ body {
     color: #374e68;
 }
 
-#twoColumn {
-    column-count: 2;
-    margin-left: 175px;
-    margin-right:125px;
-}
 .overlay {
     height: 0;
     width: 100%;
@@ -72,7 +70,7 @@ body {
 }
 
 .icons {
-    margin: 40px 30px 20px 75px;
+    margin: 40px 30px 20px 100px;
     padding: 3px;
     border-color: #efefef;
     border-radius: 50px;
@@ -94,7 +92,7 @@ body {
 }
 
 #mapLegend {
-    font-size: 70%;
+    font-size: 60%;
     font-weight: 200;
 }
 
@@ -143,7 +141,7 @@ polyline{
     font-weight: 300;
 }
 .legend text {
-    font-size: 11px;
+    font-size: 12px;
     fill: #425871;
 }
 .labelName text {
@@ -202,17 +200,17 @@ polyline{
 <br>
 <br>
 <h2>The IUCN Red List</h2>
-<!-- <h3 id="twoColumn">All Animal Species<br>"At Risk" Species</h3> -->
+<h3>All Animal Species v.s. "At Risk" Species</h3>
 <script src="js/donutCode.js"></script>
 </div>
 <script type="text/javascript">
 
-var width = 1400,
+var width = 1600,
     height = 500,
     padding = 20;
 
 //Setting projection
-var projection = d3.geoRobinson().scale(180).translate([width / 2 - 150, height / 2 + 20]);
+var projection = d3.geoRobinson().scale(200).translate([width / 2 - 150, height / 2 + 20]);
 
 var path = d3.geoPath().projection(projection);
 
@@ -521,7 +519,7 @@ function createLegend() {
 
     var legendWidth = 150,
         legendHeight = 10
-        translate = 750;
+        translate = 900;
 
     //creating gradient legend
     //code reference https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
@@ -550,7 +548,7 @@ function createLegend() {
     mapLegend.append("text").attr("x", 240 + translate).attr("y", 15)
     .text("more").style("fill", mapColor[3]);
 
-    mapLegend.append("text").attr("x", 130 + translate).attr("y", 44)
+    mapLegend.append("text").attr("x", 135 + translate).attr("y", 44)
     .text("population density").style("fill", mapColor[2]);
 }
 
