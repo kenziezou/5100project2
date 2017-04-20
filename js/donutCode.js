@@ -48,8 +48,8 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#FFCFB2", "#FFA670", "#FF7F30", 
-                "#FF6100", "#CE4F00", "#9E3C00"];
+var colorRange = ["#FF7777", "#FF2F2F", "#C30404", 
+                "#960101", "#760000", "#490000"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
@@ -264,7 +264,7 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#CE4F00", "#9E3C00"];
+var colorRange = ["#FF7777", "#490000"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
