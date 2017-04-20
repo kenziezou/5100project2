@@ -6,7 +6,7 @@
 <script src="http://d3js.org/topojson.v2.min.js"></script>
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 <script src="js/nouislider.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,900,‌​700,500,300,200,100|Roboto+Slab|" rel="stylesheet">
 <link rel="stylesheet" href="css/nouislider.css" />  
 <style type="text/css">
 
@@ -14,6 +14,7 @@ h1 {
     font-family: "Roboto Slab", serif;
     color: #9f0404;
     margin-left: 20px;
+    font-size: 500%;
 
 }
 
@@ -28,7 +29,7 @@ body {
     width: 0;
     left: 0;
     top: 0;
-    position: absolute;
+    position: fixed;
     z-index: 1;
     background-color: #9f0404;
     overflow-y: scroll;
@@ -42,7 +43,6 @@ body {
     z-index: 2;
     color: #fbfbfb;
     font-size: 18px;
-    font-family: "Roboto", sans-serif;
     margin-top: 4em;
     margin-bottom: 4em;
     margin-left: 35%;
@@ -52,7 +52,7 @@ body {
     z-index: 2;
     color: #f6f6f6;
     font-size: 16px;
-    font-family: "Roboto light", sans-serif;
+    font-weight:300;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 
@@ -78,6 +78,11 @@ body {
 #countryHover {
     font-size: 80%;
     color: rgb(80,0,0);
+}
+
+#mapLegend {
+    font-size: 70%;
+    font-weight: 200;
 }
 
 /*pulse animation code from http://codepen.io/olam/pen/zcqea*/
@@ -149,7 +154,7 @@ polyline{
     text-align: center;
 }
 text {
-  font: 12px sans-serif;
+  font: 14px;
 }
 form {
     text-align: center;
@@ -200,9 +205,12 @@ form {
 <h1>
 The Sixth Extinction
 </h1>
+</br>
 
 <div id="myNav" class="overlay"></div>
 <div id="map" class="graphic"></div>
+<div id="mapLegend"></div>
+<br>
 <div id="slider" class="graphic"></div>
 <div class="buttons">
     <!-- image from http://www.iconninja.com/mole-mammal-animal-shape-icon-858145 -->
@@ -232,7 +240,7 @@ The Sixth Extinction
 
 <!-- Donut chart of animal endangerment severity
  -->
- <div id="donut">
+ <div id="donut" class="graphic">
 <br>
 <br>
 <br>
@@ -252,6 +260,7 @@ var projection = d3.geoRobinson().scale(180).translate([width / 2 - 150, height 
 var path = d3.geoPath().projection(projection);
 
 var circleScale = d3.scaleLinear().domain([1,52]).range([5,50]);
+var mapColor = ["#f0f4f8", "#80a5cc", "#6d86a1", "#425871", "#142538"];
 //SVG container
 
 var svg = d3.select("#map").append("svg")
@@ -320,7 +329,6 @@ d3.queue()
 
 
     //show extinction by animal class selection
-
     var animalClassColors = ["#ffcc00","#ff8c1a","#C26C55","#C23C5F","#f53dc7","#751aff"];
 
     var allButtons = d3.selectAll(".icons");
@@ -337,6 +345,42 @@ d3.queue()
     .on("mouseout", function() {
         d3.select(this).style("background-color", "transparent");
     });
+
+    var mapLegend = d3.select("#mapLegend").append("svg").attr("width", width).attr("height", 70);
+
+    var legendWidth = 150,
+        legendHeight = 10
+        translate = 750;
+
+    //creating gradient legend
+    //code reference https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
+    var defs = mapLegend.append("defs");
+
+    var linearGradient = defs.append("linearGradient")
+    .attr("id", "linear-gradient")
+    .attr("x1", "0%").attr("y1", "0%")
+    .attr("x2", "100%").attr("y2", "0%");
+
+    linearGradient.append("stop").attr("offset", "0%").attr("stop-color", mapColor[0]);
+    linearGradient.append("stop").attr("offset", "60%").attr("stop-color", mapColor[1]);
+    linearGradient.append("stop").attr("offset", "100%").attr("stop-color", "#68809b");
+
+    mapLegend.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .attr("x", 100 + translate)
+    .attr("y", 20)
+    .style("fill", "url(#linear-gradient)")
+    .style("stroke", mapColor[1]).style("stroke-width", 0.5).style("stroke-opacity", 0.7);
+
+    mapLegend.append("text").attr("x", 90 + translate).attr("y", 15)
+    .text("less").style("fill", mapColor[1]);
+
+    mapLegend.append("text").attr("x", 240 + translate).attr("y", 15)
+    .text("more").style("fill", mapColor[3]);
+
+    mapLegend.append("text").attr("x", 130 + translate).attr("y", 44)
+    .text("population density").style("fill", mapColor[2]);
 
 });
 
@@ -403,6 +447,7 @@ function mapExtinction(data, from, to, coordinates, color) {
 
     //show extinct animal list of that country within selected time frame on click
     .on("click", function(d) {
+
         var arrayOfValues = d.values;
 
         var classList = [];
@@ -415,7 +460,8 @@ function mapExtinction(data, from, to, coordinates, color) {
 
         classList.sort();
 
-        d3.select(".overlay").style("width", "100%").style("height", "100%").style("opacity", 0.95);
+        d3.select(".overlay")
+        .style("width", "100%").style("height", "100%").style("opacity", 0.95);
 
         classList.forEach(function(d) {
             d3.select("#myNav").append("div")
@@ -423,8 +469,6 @@ function mapExtinction(data, from, to, coordinates, color) {
             .attr("id", d)
             .text(d)
         });
-
-        // d3.selectAll(".graphic").style("overflow-y", "hidden");
 
         arrayOfValues.forEach(function(d) {
             d3.select("#"+d.animalClass).append("div")
@@ -488,9 +532,7 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     //find maximum population density
     var maxPopu = d3.max(popuCountry, function (d) {return d[2010];});
 
-    var color = ["#f0f4f8", "#80a5cc", "#6d86a1", "#425871", "#142538"];
-
-    var colorScale = d3.scaleLinear().domain([0, 80, 200, 500, maxPopu]).range(color);
+    var colorScale = d3.scaleLinear().domain([0, 80, 200, 500, maxPopu]).range(mapColor);
 
 
     //draw map with population by continents
