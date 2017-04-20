@@ -52,13 +52,17 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#6d86a1", "#b30909"];
+var colorRange = ["#b30909", "#6d86a1"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
-        {label:"Least concern", value:61.87, definition:"Lowest risk. Does not qualify for a more at-risk category. Widespread and abundant taxa are included in this category.", number:82065},
-        {label:"At risk", value:38.13, definition:"Species are classified by the IUCN Red List into nine groups, set through criteria such as rate of decline, population size, area of geographic distribution, and degree of population and distribution fragmentation.", number:31290}
-        ];
+{label:"At risk", value:38.13, 
+        definition:"Species are classified by the IUCN Red List into nine groups,\
+        set through criteria such as rate of decline, population size, area of geographic distribution,\
+        and degree of population and distribution fragmentation.", number:31290},
+        {label:"Least concern", value:61.87, 
+        definition:"Lowest risk. Does not qualify for a more at-risk category.\
+        Widespread and abundant taxa are included in this category.", number:82065},];
 
 change(datasetTotal);
 d3.selectAll("input")
@@ -112,7 +116,7 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#9f0404","#cc0000", "#7F1C1B","#c83839","#dc6b6c","#e38687"];
+var colorRange = ["#9f0404","#cc0000", "#b2634a","#c83839","#dc6b6c","#e38687"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
