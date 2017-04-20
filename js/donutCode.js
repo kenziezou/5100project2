@@ -18,8 +18,8 @@ svg3.append("g")
 svg3.append("g")
   .attr("class", "lines");
 
-var width = 960,
-    height = 450,
+var width = 900,
+    height = 400,
   radius = Math.min(width, height) / 2;
 
 var pie = d3.pie()
@@ -51,12 +51,12 @@ var colorRange = ["#FFCFB2", "#FFA670", "#FF7F30",
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
-    {label:"Extinct", value:2.86}, 
-        {label:"Critically endangered", value:17.60}, 
-        {label:"Extinct in wild", value:0.24},
-        {label:"Endangered", value:26.04},
-        {label:"Vulnerable", value:38.16},
-        {label:"Near threatened", value:15.11}
+        {label:"Extinct", value:2.86, definition:"No known individuals remaining.", number:893},
+        {label:"Critically endangered", value:17.60, definition:"Extremely high risk of extinction in the wild.", number:5509},  
+        {label:"Extinct in wild", value:0.24, definition:"Known only to survive in captivity, or as a naturalized population outside its historic range.", number:74},
+        {label:"Endangered", value:26.04, definition:"High risk of extinction in the wild.", number:8150},
+        {label:"Vulnerable", value:38.16, definition:"High risk of endangerment in the wild.", number:11941},
+        {label:"Near threatened", value:15.11, definition:"Likely to become endangered in the near future.", number:4723}
         ];
 
 change(datasetTotal);
@@ -106,7 +106,7 @@ function change(data) {
             div.style("left", d3.event.pageX+10+"px");
             div.style("top", d3.event.pageY-25+"px");
             div.style("display", "inline-block");
-            div.html((d.data.label)+"<br>"+(d.data.value)+"%");
+            div.html((d.data.label)+"<br>"+"Definition: "+(d.data.definition)+"<br>"+"Total number: "+(d.data.number));
         });
     slice
         .on("mouseout", function(d){
