@@ -4,7 +4,7 @@
 
 //First donut chart: animal category at risk
 
-var svgWidth = 650,
+var svgWidth = 600,
     svgHeight = 550;
 
 d3.select("input[value=\"total\"]").property("checked", true);
@@ -188,7 +188,7 @@ function change(data) {
         .attr('class', 'legend')
         .attr('transform', function(d, i) {
             var height = legendRectSize + legendSpacing;
-            var offset =  height * color.domain().length / 2.1;
+            var offset =  height * color.domain().length / 2;
             var horz = -3 * legendRectSize;
             var vert = i * height - offset;
             return 'translate(' + horz + ',' + vert + ')';

@@ -86,9 +86,9 @@ body {
     margin-bottom: 20px;
 }
 
-#countryHover {
-    font-size: 80%;
-    color: rgb(80,0,0);
+.countryTooltip {
+    color: #425871;
+    font-weight: 300;
 }
 
 #mapLegend {
@@ -150,7 +150,7 @@ polyline{
 }
 
 .donutChart {
-    margin-left: 20px;
+    margin-left: 40px;
     margin-bottom: 40px;
 }
 
@@ -343,9 +343,10 @@ function mapExtinction(data, from, to, coordinates, color) {
     //country names on hover
     var countryHover = d3.select("body")
         .append("div")
+        .attr("class", "countryTooltip")
         .style("position", "absolute")
         .style("z-index", "10")
-        .style("border-radius", 20)
+        .style("border-radius", 5)
         .style("visibility", "hidden");
 
     //mouseover functions
