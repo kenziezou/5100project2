@@ -594,7 +594,7 @@ d3.json("animals.json", function(error, data) {
 
     x.domain(d3.extent(data, function(d) { return d.year; }));
     y.domain([d3.min(data, function(d) { return d.value; }) / 1.005, d3.max(data, function(d) { return d.value; }) * 1.005]);
-
+    // console.log("xDomain", x.domain);
     g.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(0," + height + ")")
@@ -665,7 +665,6 @@ d3.json("animals.json", function(error, data) {
       focus.select(".x-hover-line").attr("y2", height - y(d.value));
       focus.select(".y-hover-line").attr("x2", width + width);
     }
-
 
 });
 

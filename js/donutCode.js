@@ -59,23 +59,23 @@ datasetTotal = [
         {label:"Near threatened", value:5.76}
         ];
 
-datasetOption1 = [
-    {label:"Extinct", value:0.67}, 
-        {label:"Critically endangered", value:11.07}, 
-        {label:"Extinct in wild", value:0.04},
-        {label:"Endangered", value:17.22},
-        {label:"Vulnerable", value:13.60},
-        {label:"Near threatened", value:8.16}
-        ];
+// datasetOption1 = [
+//     {label:"Extinct", value:0.67}, 
+//         {label:"Critically endangered", value:11.07}, 
+//         {label:"Extinct in wild", value:0.04},
+//         {label:"Endangered", value:17.22},
+//         {label:"Vulnerable", value:13.60},
+//         {label:"Near threatened", value:8.16}
+//         ];
 
-datasetOption2 = [
-    {label:"Extinct", value:1.78}, 
-        {label:"Critically endangered", value:4.39}, 
-        {label:"Extinct in wild", value:0.043},
-        {label:"Endangered", value:10.15},
-        {label:"Vulnerable", value:11.33},
-        {label:"Near threatened", value:7.34}
-        ];
+// datasetOption2 = [
+//     {label:"Extinct", value:1.78}, 
+//         {label:"Critically endangered", value:4.39}, 
+//         {label:"Extinct in wild", value:0.043},
+//         {label:"Endangered", value:10.15},
+//         {label:"Vulnerable", value:11.33},
+//         {label:"Near threatened", value:7.34}
+//         ];
 
 change(datasetTotal);
 d3.selectAll("input")
