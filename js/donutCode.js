@@ -7,7 +7,7 @@ d3.select("input[value=\"total\"]").property("checked", true);
 
 var svg3 = d3.select("body")
     .append("svg")
-    .attr("width", 700)
+    .attr("width", 600)
     .attr("height", 400)
     .append("g")
 
@@ -20,8 +20,8 @@ svg3.append("g")
 svg3.append("g")
   .attr("class", "lines");
 
-var width = 650,
-    height = 380,
+var width = 600,
+    height = 350,
   radius = Math.min(width, height) / 2;
 
 var pie = d3.pie()
@@ -201,7 +201,7 @@ d3.select("input[value=\"total\"]").property("checked", true);
 
 var svg3 = d3.select("body")
     .append("svg")
-    .attr("width", 700)
+    .attr("width", 600)
     .attr("height", 400)
     .append("g")
 
@@ -214,8 +214,8 @@ svg3.append("g")
 svg3.append("g")
   .attr("class", "lines");
 
-var width = 650,
-    height = 380,
+var width = 600,
+    height = 350,
   radius = Math.min(width, height) / 2;
 
 var pie = d3.pie()
@@ -300,7 +300,7 @@ function change(data) {
             div.style("left", d3.event.pageX+10+"px");
             div.style("top", d3.event.pageY-25+"px");
             div.style("display", "inline-block");
-            div.html((d.data.label)+": "+(d.data.definition)+"<br>"+"Total number: "+(d.data.number)+" species");
+            div.html((d.data.label)+": "+"<br>"+(d.data.definition)+"<br>"+"<br>"+"Total number: "+(d.data.number)+" species");
         });
     slice
         .on("mouseout", function(d){
