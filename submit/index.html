@@ -1,7 +1,7 @@
 
 <html>
 <head>
-<title>INFO 3300 - Data-driven Web Applications</title>
+<title>INFO 3300 - Data-driven Web Applications - Project 2</title>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="http://d3js.org/topojson.v2.min.js"></script>
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
@@ -9,7 +9,9 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:400,900,‌​700,500,300,200,100|Roboto+Slab" rel="stylesheet">
 <link rel="stylesheet" href="css/nouislider.css" />  
 <style type="text/css">
-
+/* All css styling done here except for the slider, 
+which has a separate css file that came with the js file
+*/
 h1 {
     font-family: "Roboto Slab", serif;
     color: #9f0404;
@@ -71,7 +73,7 @@ body {
 }
 
 .icons {
-    margin: 30px 30px 20px 100px;
+    margin: 40px 30px 20px 100px;
     padding: 3px;
     border-color: #efefef;
     border-radius: 50px;
@@ -143,7 +145,6 @@ a:visited {
 
 /*donut chart style
 */
-
 polyline{
   opacity: .3;
   stroke: #142538;
@@ -184,9 +185,7 @@ polyline{
     margin-left: 40px;
     margin-bottom: 40px;
 }
-
 </style>
-
 </head>
 
 <body>
@@ -201,9 +200,12 @@ polyline{
 <h2>Extinction by Time and Place</h2>
 </br>
 
+<!-- mapping extinction -->
 <div id="myNav" class="overlay"></div>
 <div id="map" class="graphic"></div>
-<div id="mapLegend"><p class="explain">** pre 1960 population density shown by continents, post 1960 shown by countries **</p></div>
+<div id="mapLegend">
+<p class="explain">** pre 1960 population density shown by continents, post 1960 shown by countries **</p>
+</div>
 <div id="slider" class="graphic"></div>
 <div class="buttons">
     <!-- image from http://www.iconninja.com/mole-mammal-animal-shape-icon-858145 -->
@@ -563,6 +565,8 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     }
 }
 
+
+//helper to draw map legend
 function createLegend() {
     var mapLegend = d3.select("#mapLegend").append("svg").attr("width", width).attr("height", 70);
 
@@ -602,5 +606,4 @@ function createLegend() {
 }
 
 </script>
-
 </body>
