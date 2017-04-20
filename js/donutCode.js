@@ -108,7 +108,7 @@ function change(data) {
             div.style("left", d3.event.pageX+10+"px");
             div.style("top", d3.event.pageY-25+"px");
             div.style("display", "inline-block");
-            div.html((d.data.label)+": "+(d.data.definition)+"<br>"+"Total number: "+(d.data.number));
+            div.html((d.data.label)+": "+(d.data.definition)+"<br>"+"Total number: "+(d.data.number)+"species");
         });
     slice
         .on("mouseout", function(d){
