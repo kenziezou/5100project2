@@ -20,17 +20,16 @@ svg3.append("g")
 
 var width = 650,
     height = 380,
-  radius = Math.min(width, height) / 2;
+    radius = Math.min(width, height) / 2;
+    // radius = d3.scaleSqrt()
+    //                 .domain([31290,82065])
+    //                 .range([38.13,100])
 
 var pie = d3.pie()
   .sort(null)
   .value(function(d) {
     return d.value;
   });
-
-var linearScale = d3.scaleLinear()
-                    .domain([31290,82065])
-                    .range([])
 
 var arc = d3.arc()
   .outerRadius(radius * 0.8)
