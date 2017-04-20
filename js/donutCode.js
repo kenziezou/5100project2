@@ -3,12 +3,17 @@
 
 
 //First donut chart: animal category at risk
+
+var svgWidth = 550,
+    svgHeight = 400;
+
 d3.select("input[value=\"total\"]").property("checked", true);
 
 var svg3 = d3.select("body")
     .append("svg")
-    .attr("width", 600)
-    .attr("height", 400)
+    .attr("class", "donutChart")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
     .append("g")
 
 svg3.append("g")
@@ -20,8 +25,8 @@ svg3.append("g")
 svg3.append("g")
   .attr("class", "lines");
 
-var width = 600,
-    height = 350,
+var width = 450,
+    height = 400,
   radius = Math.min(width, height) / 2;
 
 var pie = d3.pie()
@@ -193,16 +198,15 @@ function change(data) {
 change(datasetTotal);
 
 
-
-
 //second donut chart
 
 d3.select("input[value=\"total\"]").property("checked", true);
 
 var svg3 = d3.select("body")
     .append("svg")
-    .attr("width", 600)
-    .attr("height", 400)
+    .attr("class", "donutChart")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
     .append("g")
 
 svg3.append("g")
@@ -214,9 +218,7 @@ svg3.append("g")
 svg3.append("g")
   .attr("class", "lines");
 
-var width = 600,
-    height = 350,
-  radius = Math.min(width, height) / 2;
+var radius = Math.min(width, height) / 2;
 
 var pie = d3.pie()
   .sort(null)
@@ -241,7 +243,7 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#490000","#760000", "#960101","#C30404","#FF2F2F","#FF7777"];
+var colorRange = ["#d32f2f","#da4127", "#e2521f","#ed6c14","#f47e0c","#ff9800"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
