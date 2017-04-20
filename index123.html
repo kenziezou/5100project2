@@ -32,7 +32,7 @@ body {
 
 .overlay {
     height: 0;
-    width: 0;
+    width: 100%;
     left: 0;
     top: 0;
     position: fixed;
@@ -466,7 +466,9 @@ function mapExtinction(data, from, to, coordinates, color) {
         classList.sort();
 
         d3.select(".overlay")
-        .style("width", "100%").style("height", "100%").style("opacity", 0.95);
+        // .style("width", "100%")
+        .transition()
+        .style("height", "100%").style("opacity", 0.95);
 
         classList.forEach(function(d) {
             d3.select("#myNav").append("div")
@@ -485,7 +487,7 @@ function mapExtinction(data, from, to, coordinates, color) {
     var screen = d3.select("#myNav");
 
     screen.on("click", function(d) {
-        screen.style("width", "0%");
+        screen.transition().style("height", "0%");
         d3.selectAll(".animalClass").remove();
         d3.selectAll(".species").remove();
     });
