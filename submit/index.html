@@ -71,7 +71,7 @@ body {
 }
 
 .icons {
-    margin: 40px 30px 20px 100px;
+    margin: 30px 30px 20px 100px;
     padding: 3px;
     border-color: #efefef;
     border-radius: 50px;
@@ -95,6 +95,12 @@ body {
 #mapLegend {
     font-size: 60%;
     font-weight: 200;
+    margin-bottom: 0px;
+}
+
+p.explain {
+    margin-left: 500px;
+    color: #80a5cc;
 }
 
 #quote {
@@ -197,8 +203,7 @@ polyline{
 
 <div id="myNav" class="overlay"></div>
 <div id="map" class="graphic"></div>
-<div id="mapLegend"></div>
-<br>
+<div id="mapLegend"><p class="explain">** pre 1960 population density shown by continents, post 1960 shown by countries **</p></div>
 <div id="slider" class="graphic"></div>
 <div class="buttons">
     <!-- image from http://www.iconninja.com/mole-mammal-animal-shape-icon-858145 -->
@@ -230,7 +235,7 @@ polyline{
 <div id="donut" class="graphic">
 <br>
 <br>
-<h2>The IUCN Red List</h2>
+<h2>The IUCN Red List (2016)</h2>
 <h3>All Animal Species and "At Risk" Species</h3>
 <script src="js/donutCode.js"></script>
 </div>
@@ -507,7 +512,6 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     //draw map with population by continents
     if (time < 1960) {
         //creating data to draw continents
-        //code simplified from http://geojson.org/geojson-spec.html#introduction
         var continentNames = ["Asia", "Africa", "Europe", "North America", "South America", "Oceania"];
         var continents = [];
         continentNames.forEach(function(d, i) {
