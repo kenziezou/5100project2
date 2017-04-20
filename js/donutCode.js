@@ -30,7 +30,7 @@ var pie = d3.pie()
 
 var arc = d3.arc()
   .outerRadius(radius * 0.8)
-  .innerRadius(radius * 0.6);
+  .innerRadius(radius * 0.5);
 
 var outerArc = d3.arc()
   .innerRadius(radius * 0.9)
