@@ -268,7 +268,7 @@ var colorRange = ["#FF7777", "#490000"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
-        {label:"Total number of animals", value:61.87, definition:"Extremely high risk of extinction in the wild.", number:82065},
+        {label:"Number of animals at least concern", value:61.87, definition:"Extremely high risk of extinction in the wild.", number:82065},
         {label:"Number of animals at risk", value:38.13, definition:"Species are classified by the IUCN Red List into nine groups, set through criteria such as rate of decline, population size, area of geographic distribution, and degree of population and distribution fragmentation.", number:31290}
         ];
 
