@@ -45,6 +45,7 @@
   position: relative;
   z-index: 1;
 }
+
 .noUi-state-tap .noUi-connect,
 .noUi-state-tap .noUi-origin {
   -webkit-transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;
@@ -128,16 +129,6 @@
 }*/
 .noUi-handle:after {
   left: 17px;
-}
-.noUi-vertical .noUi-handle:before,
-.noUi-vertical .noUi-handle:after {
-  width: 14px;
-  height: 1px;
-  left: 6px;
-  top: 14px;
-}
-.noUi-vertical .noUi-handle:after {
-  top: 17px;
 }
 /* Disabled state;
  */

@@ -105,6 +105,20 @@ body {
     background-color: #6d86a1;
 }
 
+.footer {
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-bottom: 40px;
+    color: #6d86a1;
+}
+
+a:link {
+    color: #e18f7f;
+}
+
+a:visited {
+    color: #80a5cc;
+}
 /*pulse animation code from http://codepen.io/olam/pen/zcqea*/
 @keyframes pulse {
   0% {
@@ -138,13 +152,12 @@ polyline{
 .toolTip {
     position: absolute;
     display: none;
-    width: 400px;
+    width: 300px;
     height: auto;
     background: none repeat scroll 0 0 white;
     opacity: 0.9;
     border:  none;
     border-radius: 5px;
-/*    box-shadow: -1px 1px 5px #888888;*/
     color: #425871;
     padding: 8px;
     font-weight: 300;
@@ -217,6 +230,14 @@ polyline{
 <h3>All Animal Species and "At Risk" Species</h3>
 <script src="js/donutCode.js"></script>
 </div>
+
+<div class="footer">
+<p>Data from <a href="https://en.wikipedia.org/wiki/Lists_of_extinct_animals">Wikipedia: Lists of extinct animals</a>, 
+<a href="https://www.kaggle.com/walla2ae/world-population">World Bank Statistics: World Population</a>,
+and <a href="http://apiv3.iucnredlist.org">IUCN Red List API</a>.
+<br>Visualization by Kenzie Zou, Yue Xu, and Yuxiang Peng</p>
+</div>
+
 <script type="text/javascript">
 
 var width = 1600,
@@ -241,7 +262,8 @@ var layer2 = svg.append("g");
 
 
 //extinction dataset collected from wikipedia
-//population dataset from 
+//pre 1960 population dataset collected from wikipedia
+//post 1960 population dataset from https://www.kaggle.com/walla2ae/world-population
 d3.queue()
 .defer(d3.json, "continent-110m.json")
 .defer(d3.csv, "worldPopulation.csv")
