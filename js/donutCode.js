@@ -136,6 +136,9 @@ function change(data) {
             return (d.value+"%");
         });
 
+    d3.select("svg.donutChart").append("text").attr("dy", "2em").text("All Animal Species");
+
+
     function midAngle(d){
         return d.startAngle + (d.endAngle - d.startAngle)/2;
     }
