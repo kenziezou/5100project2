@@ -350,42 +350,7 @@ d3.queue()
         d3.select(this).style("background-color", "transparent");
     });
 
-    var mapLegend = d3.select("#mapLegend").append("svg").attr("width", width).attr("height", 70);
-
-    var legendWidth = 150,
-        legendHeight = 10
-        translate = 750;
-
-
-    //creating gradient legend
-    //code reference https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
-    var defs = mapLegend.append("defs");
-
-    var linearGradient = defs.append("linearGradient")
-    .attr("id", "linear-gradient")
-    .attr("x1", "0%").attr("y1", "0%")
-    .attr("x2", "100%").attr("y2", "0%");
-
-    linearGradient.append("stop").attr("offset", "0%").attr("stop-color", mapColor[0]);
-    linearGradient.append("stop").attr("offset", "60%").attr("stop-color", mapColor[1]);
-    linearGradient.append("stop").attr("offset", "100%").attr("stop-color", "#68809b");
-
-    mapLegend.append("rect")
-    .attr("width", legendWidth)
-    .attr("height", legendHeight)
-    .attr("x", 100 + translate)
-    .attr("y", 20)
-    .style("fill", "url(#linear-gradient)")
-    .style("stroke", mapColor[1]).style("stroke-width", 0.5).style("stroke-opacity", 0.7);
-
-    mapLegend.append("text").attr("x", 90 + translate).attr("y", 15)
-    .text("less").style("fill", mapColor[1]);
-
-    mapLegend.append("text").attr("x", 240 + translate).attr("y", 15)
-    .text("more").style("fill", mapColor[3]);
-
-    mapLegend.append("text").attr("x", 130 + translate).attr("y", 44)
-    .text("population density").style("fill", mapColor[2]);
+    createLegend();
 
 });
 
@@ -467,7 +432,6 @@ function mapExtinction(data, from, to, coordinates, color) {
 
         d3.select(".overlay")
         // .style("width", "100%")
-        .transition()
         .style("height", "100%").style("opacity", 0.95);
 
         classList.forEach(function(d) {
@@ -487,7 +451,7 @@ function mapExtinction(data, from, to, coordinates, color) {
     var screen = d3.select("#myNav");
 
     screen.on("click", function(d) {
-        screen.transition().style("height", "0%");
+        screen.style("height", "0%");
         d3.selectAll(".animalClass").remove();
         d3.selectAll(".species").remove();
     });
@@ -627,6 +591,44 @@ function drawContinent(data, popuContinent, popuCountry, time) {
             .style("fill", function(d) { return d.color; });
         map.exit().remove();      
     }
+}
+
+function createLegend() {
+    var mapLegend = d3.select("#mapLegend").append("svg").attr("width", width).attr("height", 70);
+
+    var legendWidth = 150,
+        legendHeight = 10
+        translate = 750;
+
+    //creating gradient legend
+    //code reference https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
+    var defs = mapLegend.append("defs");
+
+    var linearGradient = defs.append("linearGradient")
+        .attr("id", "linear-gradient")
+        .attr("x1", "0%").attr("y1", "0%")
+        .attr("x2", "100%").attr("y2", "0%");
+
+    linearGradient.append("stop").attr("offset", "0%").attr("stop-color", mapColor[0]);
+    linearGradient.append("stop").attr("offset", "60%").attr("stop-color", mapColor[1]);
+    linearGradient.append("stop").attr("offset", "100%").attr("stop-color", "#68809b");
+
+    mapLegend.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .attr("x", 100 + translate)
+        .attr("y", 20)
+        .style("fill", "url(#linear-gradient)")
+        .style("stroke", mapColor[1]).style("stroke-width", 0.5).style("stroke-opacity", 0.7);
+
+    mapLegend.append("text").attr("x", 90 + translate).attr("y", 15)
+    .text("less").style("fill", mapColor[1]);
+
+    mapLegend.append("text").attr("x", 240 + translate).attr("y", 15)
+    .text("more").style("fill", mapColor[3]);
+
+    mapLegend.append("text").attr("x", 130 + translate).attr("y", 44)
+    .text("population density").style("fill", mapColor[2]);
 }
 
 </script>
