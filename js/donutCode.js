@@ -9,7 +9,7 @@ var svgWidth = 600,
 
 d3.select("input[value=\"total\"]").property("checked", true);
 
-var svg3 = d3.select("body")
+var svg3 = d3.select("#donut")
     .append("svg")
     .attr("class", "donutChart")
     .attr("width", svgWidth)
@@ -47,7 +47,7 @@ var legendRectSize = (radius * 0.08);
 var legendSpacing = radius * 0.02;
 
 
-var div = d3.select("body").append("div").attr("class", "toolTip");
+var div = d3.select("#donut").append("div").attr("class", "toolTip");
 
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -75,7 +75,7 @@ change(datasetTotal);
 
 d3.select("input[value=\"total\"]").property("checked", true);
 
-var svg3 = d3.select("body")
+var svg3 = d3.select("#donut")
     .append("svg")
     .attr("class", "donutChart")
     .attr("width", svgWidth)
@@ -111,7 +111,7 @@ var legendRectSize = (radius * 0.08);
 var legendSpacing = radius * 0.02;
 
 
-var div = d3.select("body").append("div").attr("class", "toolTip");
+var div = d3.select("#donut").append("div").attr("class", "toolTip");
 
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 

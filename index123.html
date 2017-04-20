@@ -13,7 +13,7 @@
 h1 {
     font-family: "Roboto Slab", serif;
     color: #9f0404;
-    margin-left: 20px;
+    margin-left: 30px;
     font-size: 500%;
     font-weight: 900;
 }
@@ -21,12 +21,12 @@ h1 {
 h2 {
     font-family: "Roboto Slab", serif;
     color: #9f0404;
-    margin-left: 40px;
+    margin-left: 30px;
     font-size: 200%;
 }
 
 h3 {
-    margin-left: 40px;
+    margin-left: 480px;
 }
 
 body {
@@ -97,6 +97,14 @@ body {
     font-weight: 200;
 }
 
+#quote {
+    margin-left: 30px;
+    margin-right: 30px;
+    padding:40 60 40 60;
+    color: #fbfbfb;
+    background-color: #6d86a1;
+}
+
 /*pulse animation code from http://codepen.io/olam/pen/zcqea*/
 @keyframes pulse {
   0% {
@@ -161,6 +169,12 @@ polyline{
 
 <body>
 <h1>The Sixth Extinction</h1>
+<blockquote id="quote">
+<p>The anthropologist Richard Leakey has warned that <b>"Homo sapiens might not only be the agent of the sixth extinction, but also risks being one of its victims."</b> </p>
+<p>A sign in the Hall of Biodiversity offers a quote from the Stanford ecologist Paul Ehrlich: 
+<br><b>"IN PUSHING OTHER SPECIES TO EXTINCTION, HUMANITY IS BUSY SAWING OFF THE LIMB ON WHICH IT PERCHES."</b> </p>
+
+<p>---- Elizabeth Kolbert, <i>The Sixth Extinction: An Unnatural History</i></p></blockquote>
 <h2>Extinction by Time and Place</h2>
 </br>
 
@@ -195,13 +209,12 @@ polyline{
     alt="Crustacean" width="72" height="72" value="Crustacean"/>
 </div>
 
-<!-- Donut chart of animal endangerment severity
- -->
- <div id="donut" class="graphic">
+<!-- Donut chart of animal endangerment severity-->
+<div id="donut" class="graphic">
 <br>
 <br>
 <h2>The IUCN Red List</h2>
-<h3>All Animal Species v.s. "At Risk" Species</h3>
+<h3>All Animal Species and "At Risk" Species</h3>
 <script src="js/donutCode.js"></script>
 </div>
 <script type="text/javascript">
