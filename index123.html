@@ -346,7 +346,6 @@ function mapExtinction(data, from, to, coordinates, color) {
         .attr("class", "countryTooltip")
         .style("position", "absolute")
         .style("z-index", "10")
-        .style("border-radius", 5)
         .style("visibility", "hidden");
 
     //mouseover functions
@@ -355,9 +354,11 @@ function mapExtinction(data, from, to, coordinates, color) {
         d3.select(this).attr("r", function(d) { return circleScale(d.count) + 5; }).style("opacity", 1);
         return countryHover
         .style("visibility", "visible")
-        .style("background", "#e8edf2")
-        .style("padding", 2)
-        .style("opacity", 0.75)
+        .style("background", "white")
+        .style("padding", "3px")
+        .style("opacity", 0.9)
+        .style("border", "none")
+        .style("border-radius", "5px")
         .text(d.key); 
         })
     .on("mousemove", function() { 
