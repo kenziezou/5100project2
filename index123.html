@@ -6,7 +6,7 @@
 <script src="http://d3js.org/topojson.v2.min.js"></script>
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 <script src="js/nouislider.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab" rel="stylesheet">
 <link rel="stylesheet" href="css/nouislider.css" />  
 <style type="text/css">
 
@@ -19,7 +19,7 @@ h1 {
 
 body {
     font-family: "Roboto", sans-serif;
-    margin: 30px 60px 60px 30px;
+    padding: 30px 60px -10px 30px;
     background-color: #f6f6f6;
 }
 
@@ -92,6 +92,106 @@ body {
       box-shadow: 0 0 0 0 rgba(200, 50, 50, 0);
   }
 }
+
+/*donut chart style
+*/
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path {
+    display: none;
+}
+
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+.focus circle {
+    fill: none;
+    stroke: steelblue;
+}
+
+path.slice{
+  stroke-width:2px;
+}
+
+polyline{
+  opacity: .3;
+  stroke: black;
+  stroke-width: 2px;
+  fill: none;
+}
+
+.labelValue
+{
+  font-size: 60%;
+  opacity: .5;
+}
+
+.toolTip {
+    position: absolute;
+    display: none;
+    width: auto;
+    height: auto;
+    background: none repeat scroll 0 0 white;
+    border: 0 none;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: -3px 3px 15px #888888;
+    color: black;
+    font: 12px sans-serif;
+    padding: 5px;
+    text-align: center;
+}
+text {
+  font: 12px sans-serif;
+}
+form {
+    text-align: center;
+}
+
+/*line graphs styles
+*/
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #D4D8DA;
+  stroke-width: 2px;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: #FF6100;
+  stroke-width: 3px;
+}
+
+.focus1 circle {
+  fill: #F1F3F3;
+  stroke: #FF6100;
+  stroke-width: 3px;
+}
+.focus circle {
+  fill: #F1F3F3;
+  stroke: #FF6100;
+  stroke-width: 3px;
+}
+  
+.hover-line {
+  stroke: #FF6100;
+  stroke-width: 2px;
+  stroke-dasharray: 3,3;
+}
 </style>
 
 </head>
@@ -130,6 +230,21 @@ The Sixth Extinction
     alt="Crustacean" width="72" height="72" value="Crustacean"/>
 </div>
 
+<!-- Donut chart of animal endangerment severity
+ -->
+ <div id="donut">
+<br>
+<br>
+<br>
+<h3>Severity of animal endangerment proportion</h3>
+<br>
+<form>
+<label><input type="radio" name="dataset" id="dataset" value="total" checked>IUCN Red List Categories (All Animals)</label>
+<label><input type="radio" name="dataset" id="dataset" value="option1">Amphibians</label>
+<label><input type="radio" name="dataset" id="dataset" value="option2">Mammals</label>
+</form>
+<script src="js/donutCode.js"></script>
+</div>
 <script type="text/javascript">
 
 var width = 1400,
@@ -314,6 +429,8 @@ function mapExtinction(data, from, to, coordinates, color) {
             .text(d)
         });
 
+        // d3.selectAll(".graphic").style("overflow-y", "hidden");
+
         arrayOfValues.forEach(function(d) {
             d3.select("#"+d.animalClass).append("div")
             .attr("class", "species")
@@ -376,9 +493,9 @@ function drawContinent(data, popuContinent, popuCountry, time) {
     //find maximum population density
     var maxPopu = d3.max(popuCountry, function (d) {return d[2010];});
 
-    var color = ["#e8edf2", "#80a5cc", "#6d86a1", "#425871", "#142538"];
+    var color = ["#f0f4f8", "#80a5cc", "#6d86a1", "#425871", "#142538"];
 
-    var colorScale = d3.scaleLinear().domain([0, 100, 200, 500, maxPopu]).range(color);
+    var colorScale = d3.scaleLinear().domain([0, 80, 200, 500, maxPopu]).range(color);
 
 
     //draw map with population by continents
@@ -401,13 +518,14 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         map.enter().append("path")
             .merge(map)
             .attr("d", path)
-            .transition(300)           
+            .transition(1000)           
             .style("fill", function(d) { return d.color; });
         map.exit().remove();
     } 
 
     //draw map with population by countries
-    else {
+    //avoid black map when transitioning from drawing by continents to drawing by countries 
+    else if (time == 1960) {
         popuIdAndTime = [];
 
         popuCountry.forEach(function(d) {
@@ -429,7 +547,36 @@ function drawContinent(data, popuContinent, popuCountry, time) {
         map.enter().append("path")
             .merge(map)
             .attr("d", path)
-            .transition(300)
+            .style("stroke", "#425871")
+            .style("stroke-width", 0.5)
+            .style("stroke-opacity", 0.1)
+            .style("fill", function(d) { return d.color; });
+        map.exit().remove(); 
+    }
+
+    else if (time > 1960) {
+        popuIdAndTime = [];
+
+        popuCountry.forEach(function(d) {
+            var id = d.id;
+            var population = d[time];
+            popuIdAndTime.push({id:id, population:population});
+        })
+
+        countries.forEach(function(d) {
+            popuIdAndTime.forEach(function(e) {
+                if (e.id == d.id) {
+                    d.color = colorScale(e.population);
+                }
+            })
+        });
+
+        var map = layer1.selectAll("path").data(countries);
+
+        map.enter().append("path")
+            .merge(map)
+            .attr("d", path)
+            .transition(1000)
             .style("stroke", "#425871")
             .style("stroke-width", 0.5)
             .style("stroke-opacity", 0.1)
