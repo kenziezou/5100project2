@@ -23,7 +23,7 @@ var width = 650,
     radius = Math.min(width, height) / 2;
     // radius = d3.scaleSqrt()
     //                 .domain([31290,82065])
-    //                 .range([38.13,100])
+    //                 .range([0,650])
 
 var pie = d3.pie()
   .sort(null)
@@ -48,8 +48,8 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#FF7777", "#FF2F2F", "#C30404", 
-                "#960101", "#760000", "#490000"];
+var colorRange = ["#490000","#760000", "#960101","#C30404","#FF2F2F","#FF7777"  
+                 ];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
@@ -147,12 +147,12 @@ function change(data) {
     var text = svg3.select(".labelName").selectAll("text")
         .data(pie(data), function(d){ return d.data.label });
 
-    text.enter()
-        .append("text")
-        .attr("dy", ".35em")
-        .text(function(d) {
-            return (d.data.label+": "+d.value+"%");
-        });
+    // text.enter()
+    //     .append("text")
+    //     .attr("dy", ".35em")
+    //     .text(function(d) {
+    //         return (d.data.label+": "+d.value+"%");
+    //     });
 
     function midAngle(d){
         return d.startAngle + (d.endAngle - d.startAngle)/2;
