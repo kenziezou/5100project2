@@ -128,7 +128,7 @@ function change(data) {
         .append("text")
         .attr("dy", ".35em")
         .text(function(d) {
-            return (d.data.label+": "+d.value+"%");
+            return (d.value+"%");
         });
 
     function midAngle(d){
@@ -158,7 +158,7 @@ function change(data) {
             };
         })
         .text(function(d) {
-            return (d.data.label+": "+d.value+"%");
+            return (d.value+"%");
         });
 
 
@@ -343,7 +343,7 @@ function change(data) {
         .append("text")
         .attr("dy", ".35em")
         .text(function(d) {
-            return (d.data.label+": "+d.value+"%");
+            return (d.value+"%");
         });
 
     function midAngle(d){
@@ -373,7 +373,7 @@ function change(data) {
             };
         })
         .text(function(d) {
-            return (d.data.label+": "+d.value+"%");
+            return (d.value+"%");
         });
 
 
