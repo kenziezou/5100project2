@@ -15,7 +15,13 @@ h1 {
     color: #9f0404;
     margin-left: 20px;
     font-size: 500%;
+}
 
+h3 {
+    font-family: "Roboto Slab", serif;
+    color: #9f0404;
+    margin-left: 20px;
+    font-size: 200%;
 }
 
 body {
@@ -145,16 +151,16 @@ polyline{
     width: auto;
     height: auto;
     background: none repeat scroll 0 0 white;
-    border: 0 none;
-    border-radius: 8px 8px 8px 8px;
-    box-shadow: -3px 3px 15px #888888;
+    opacity: 0.95;
+    border:  none;
+    border-radius: 5px;
+/*    box-shadow: -1px 1px 5px #888888;*/
     color: black;
-    font: 12px sans-serif;
     padding: 5px;
-    text-align: center;
+    font-weight: 300;
 }
-text {
-  font: 14px;
+.legend text {
+  font-size: 12px;
 }
 form {
     text-align: center;
@@ -242,9 +248,7 @@ The Sixth Extinction
  -->
  <div id="donut" class="graphic">
 <br>
-<br>
-<br>
-<h3>IUCN at risk categories</h3>
+<h3>"At Risk" Categories from the IUCN Red List</h3>
 <br>
 <script src="js/donutCode.js"></script>
 </div>
@@ -351,6 +355,7 @@ d3.queue()
     var legendWidth = 150,
         legendHeight = 10
         translate = 750;
+
 
     //creating gradient legend
     //code reference https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
