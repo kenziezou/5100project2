@@ -51,31 +51,13 @@ var colorRange = ["#FFCFB2", "#FFA670", "#FF7F30",
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
-    {label:"Extinct", value:1.09}, 
-        {label:"Critically endangered", value:6.71}, 
-        {label:"Extinct in wild", value:0.09},
-        {label:"Endangered", value:9.93},
-        {label:"Vulnerable", value:14.55},
-        {label:"Near threatened", value:5.76}
+    {label:"Extinct", value:2.86}, 
+        {label:"Critically endangered", value:17.60}, 
+        {label:"Extinct in wild", value:0.24},
+        {label:"Endangered", value:26.04},
+        {label:"Vulnerable", value:38.16},
+        {label:"Near threatened", value:15.11}
         ];
-
-// datasetOption1 = [
-//     {label:"Extinct", value:0.67}, 
-//         {label:"Critically endangered", value:11.07}, 
-//         {label:"Extinct in wild", value:0.04},
-//         {label:"Endangered", value:17.22},
-//         {label:"Vulnerable", value:13.60},
-//         {label:"Near threatened", value:8.16}
-//         ];
-
-// datasetOption2 = [
-//     {label:"Extinct", value:1.78}, 
-//         {label:"Critically endangered", value:4.39}, 
-//         {label:"Extinct in wild", value:0.043},
-//         {label:"Endangered", value:10.15},
-//         {label:"Vulnerable", value:11.33},
-//         {label:"Near threatened", value:7.34}
-//         ];
 
 change(datasetTotal);
 d3.selectAll("input")
