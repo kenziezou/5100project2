@@ -52,7 +52,7 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#FF7777", "#490000"];
+var colorRange = ["#6d86a1", "#b30909"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
@@ -243,7 +243,7 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#d32f2f","#da4127", "#e2521f","#ed6c14","#f47e0c","#ff9800"];
+var colorRange = ["#9f0404","#cc0000", "#7F1C1B","#c83839","#d45555","#e17172"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
@@ -319,8 +319,8 @@ function change(data) {
         .attr('class', 'legend')
         .attr('transform', function(d, i) {
             var height = legendRectSize + legendSpacing;
-            var offset =  height * color.domain().length / 2;
-            var horz = -3 * legendRectSize;
+            var offset =  height * color.domain().length / 2.1;
+            var horz = -3.3 * legendRectSize;
             var vert = i * height - offset;
             return 'translate(' + horz + ',' + vert + ')';
         });
