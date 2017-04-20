@@ -6,7 +6,7 @@
 <script src="http://d3js.org/topojson.v2.min.js"></script>
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 <script src="js/nouislider.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,900,‌​700,500,300,200,100|Roboto+Slab:900|" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,900,‌​700,500,300,200,100|Roboto+Slab" rel="stylesheet">
 <link rel="stylesheet" href="css/nouislider.css" />  
 <style type="text/css">
 
@@ -182,7 +182,7 @@ polyline{
     <input class="icons" id="amphibianButton" type="image" src="icons/amphibian.png" 
     alt="Amphibian" width="72" height="72" value="Amphibian"/>
 
-            <!-- image from http://www.clipartbest.com/fish-icon-png -->
+    <!-- image from http://www.clipartbest.com/fish-icon-png -->
     <input class="icons" id="fishButton" type="image" src="icons/fish.png" 
     alt="Fish" width="72" height="72" value="Fish"/>
 
@@ -226,6 +226,9 @@ var svg = d3.select("#map").append("svg")
 var layer1 = svg.append("g");
 var layer2 = svg.append("g");
 
+
+//extinction dataset collected from wikipedia
+//population dataset from 
 d3.queue()
 .defer(d3.json, "continent-110m.json")
 .defer(d3.csv, "worldPopulation.csv")

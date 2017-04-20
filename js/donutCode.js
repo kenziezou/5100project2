@@ -116,7 +116,7 @@ var div = d3.select("body").append("div").attr("class", "toolTip");
 svg3.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
-var colorRange = ["#9f0404","#cc0000", "#b2634a","#c83839","#dc6b6c","#e38687"];
+var colorRange = ["#9f0404","#cc0000", "#b2634a","#c83839","#dc6b6c","#e18f7f"];
 var color = d3.scaleOrdinal(d3.schemeCategory20).range(colorRange);
 
 datasetTotal = [
